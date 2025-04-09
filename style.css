@@ -48,7 +48,6 @@ body {
     color: white;
     border-radius: 10px;
     margin: 20px;
-    flex-wrap: wrap;
 }
 
 .hero .content-left h1 {
@@ -74,7 +73,7 @@ body {
     text-align: center;
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
-    gap: 20px;
+    gap:20px;
 }
 
 .product:hover {
@@ -135,50 +134,55 @@ footer {
     background: #111;
 }
 
-/* Responsive Design for smaller screens */
+/* Media Queries for Responsiveness */
 
-/* For mobile devices */
-@media (max-width: 768px) {
+/* For screens smaller than 1024px (tablets and below) */
+@media (max-width: 1024px) {
+    .nav {
+        padding: 20px 30px;
+    }
+
     .hero {
         flex-direction: column;
-        padding: 40px;
+        padding: 60px;
+        text-align: center;
     }
 
     .hero .content-left h1 {
-        font-size: 36px;
-        text-align: center;
-    }
-
-    .hero .content-left p {
-        font-size: 16px;
-        text-align: center;
+        font-size: 40px;
     }
 
     .features {
-        flex-direction: column;
-        padding: 20px;
+        padding: 30px;
+        justify-content: space-between;
     }
 
     .product {
-        width: 100%;
+        max-width: 45%;
         margin-bottom: 20px;
-        box-sizing: border-box;
     }
 
-    .testimonial-card {
-        width: 100%;
-    }
-
-    /* QR code adjustments */
-    #qrcode {
+    .content-right {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 100%;
         margin-top: 20px;
     }
 
-    /* Adjust navigation menu for small screens */
+    #qrcode {
+        max-width: 256px;
+        margin: 20px auto;
+    }
+}
+
+/* For screens smaller than 768px (tablets and mobile in landscape mode) */
+@media (max-width: 768px) {
+    .nav {
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+
     .nav ul {
         flex-direction: column;
         align-items: center;
@@ -186,53 +190,83 @@ footer {
     }
 
     .nav ul li {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .hero {
+        padding: 40px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero .content-left h1 {
+        font-size: 30px;
+    }
+
+    .features {
+        flex-direction: column;
+        padding: 20px;
+        justify-content: center;
+    }
+
+    .product {
+        max-width: 80%;
         margin: 10px 0;
     }
 
-    /* Buttons */
-    .btn {
-        padding: 10px 20px;
-        font-size: 16px;
+    .testimonials {
+        padding: 30px;
+    }
+
+    .testimonial-card {
+        max-width: 80%;
+        margin: 10px auto;
+    }
+
+    #qrcode {
+        max-width: 220px;
     }
 }
 
-/* For even smaller devices (portrait phones) */
+/* For screens smaller than 480px (mobile phones in portrait mode) */
 @media (max-width: 480px) {
+    .nav {
+        padding: 15px;
+    }
+
     .hero {
         padding: 20px;
     }
 
     .hero .content-left h1 {
-        font-size: 28px;
-        text-align: center;
-    }
-
-    .hero .content-left p {
-        font-size: 14px;
-        text-align: center;
+        font-size: 25px;
     }
 
     .features {
-        flex-direction: column;
-        padding: 10px;
+        padding: 15px;
+        justify-content: center;
     }
 
     .product {
-        width: 100%;
-        margin-bottom: 20px;
-        box-sizing: border-box;
+        max-width: 90%;
+        margin: 15px 0;
     }
 
-    /* For testimonial cards */
+    .testimonials {
+        padding: 20px;
+    }
+
     .testimonial-card {
-        width: 100%;
-        margin-bottom: 15px;
+        max-width: 90%;
+        margin: 10px auto;
     }
 
-    /* Adjust the size of the QR code */
     #qrcode {
-        width: 80%;
-        height: auto;
-        margin-top: 20px;
+        max-width: 180px;
+    }
+
+    footer {
+        padding: 10px;
     }
 }
