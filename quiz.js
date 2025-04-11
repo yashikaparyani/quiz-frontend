@@ -1,3 +1,4 @@
+
 let questions = [
     {
         question: "What will console.log(2 + '2') output in JavaScript?",
@@ -73,6 +74,7 @@ function selectAnswer(index) {
         optionsElement.children[correctIndex].classList.add("correct");
     }
     disableOptions();
+    fetchAndDisplayStats(currentQuestionIndex);
     nextButton.classList.remove("hide");
 }
 
@@ -97,11 +99,9 @@ function endQuiz() {
     nextButton.classList.add("hide");
     scoreElement.classList.remove("hide");
     scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
-
-    // Auto submit the score
+    submitAnswersToBackend(userAnswers);
     saveToBackend();
 
-    // Add leaderboard button (still optional)
     const leaderboardBtn = document.createElement("button");
     leaderboardBtn.innerText = "View Leaderboard";
     leaderboardBtn.classList.add("btn");
@@ -137,6 +137,47 @@ function saveToBackend() {
     .catch(err => {
         console.error("Failed to save score:", err);
     });
+}
+
+function submitAnswersToBackend(selectedAnswers) {
+    fetch(`${BACKEND_URL}/submit-answers`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ answers: selectedAnswers }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Answer submission response:", data);
+    })
+    .catch(error => {
+        console.error("Error submitting answers:", error);
+    });
+}
+
+function fetchAndDisplayStats(questionIndex) {
+    fetch(`${BACKEND_URL}/question-stats`)
+        .then(res => res.json())
+        .then(data => {
+            const stats = data[questionIndex];
+            if (!stats) return;
+
+            const totalVotes = Object.values(stats).reduce((sum, val) => sum + val, 0);
+            if (totalVotes === 0) return;
+
+            Array.from(optionsElement.children).forEach((btn, idx) => {
+                const percent = stats[idx] || 0;
+                const percentSpan = document.createElement("span");
+                percentSpan.innerText = ` - ${percent}%`;
+                percentSpan.style.marginLeft = "10px";
+                percentSpan.style.color = "blue";
+                btn.appendChild(percentSpan);
+            });
+        })
+        .catch(err => {
+            console.error("Failed to fetch stats:", err);
+        });
 }
 
 let timeleft = 10;
