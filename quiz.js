@@ -84,6 +84,11 @@ function showQuestion() {
   nextButton.classList.add("hide");
   scoreElement.innerText = `Score: ${score}`;
   startTimer();
+  function updateProgressBar(currentIndex, totalQuestions) {
+    const progress = ((currentIndex + 1) / totalQuestions) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+  }
+  updateProgressBar(currentQuestionIndex , questions.length);
 }
 
 function selectAnswer(index) {
@@ -121,6 +126,7 @@ function endQuiz() {
   nextButton.classList.add("hide");
   scoreElement.classList.remove("hide");
   scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
+  updateProgressBar.classList.add("hide");
 
   // Auto submit the score
   saveToBackend();
