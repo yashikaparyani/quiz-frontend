@@ -126,7 +126,6 @@ function endQuiz() {
   nextButton.classList.add("hide");
   scoreElement.classList.remove("hide");
   scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
-  updateProgressBar.classList.add("hide");
 
   // Auto submit the score
   saveToBackend();
