@@ -50,36 +50,47 @@ function showQuestion() {
   optionsElement.innerHTML = "";
 
   questionData.options.forEach((option, index) => {
-      const button = document.createElement("button");
-      button.innerText = option;
-      button.classList.add("btn");
-      button.addEventListener("click", () => {
+    const buttonWrapper = document.createElement("div");
+    buttonWrapper.classList.add("btn-container");
+
+    const button = document.createElement("button");
+    button.innerText = option;
+    button.classList.add("btn");
+    button.addEventListener("click", () => {
         selectAnswer(index);
         fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 question_id: currentQuestionIndex,
                 option_index: index
             })
         })
         .then(() => {
-            // Get updated percentages
             fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
                 .then(res => res.json())
                 .then(data => {
-                  const buttons = optionsElement.querySelectorAll('button');
-                  data.forEach((percent, idx) => {
-                      const originalText = buttons[idx].innerText.split(" (")[0];
-                      buttons[idx].innerText = `${originalText} (${percent}%)`;
-                  });
-              });
+                    const buttons = optionsElement.querySelectorAll('button');
+                    data.forEach((percent, idx) => {
+                        const originalText = buttons[idx].innerText.split(" (")[0];
+                        buttons[idx].innerText = `${originalText} (${percent}%)`;
+
+                        const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+                        if (fill) fill.style.width = `${percent}%`;
+                    });
+                });
         });
     });
-      optionsElement.appendChild(button);
-  });
+
+    const progressBar = document.createElement("div");
+    progressBar.classList.add("progress-bar-container");
+    progressBar.id = `progress-${index}`;
+    progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
+
+    buttonWrapper.appendChild(button);
+    buttonWrapper.appendChild(progressBar);
+    optionsElement.appendChild(buttonWrapper);
+});
 
   nextButton.classList.add("hide");
   scoreElement.innerText = `Score: ${score}`;

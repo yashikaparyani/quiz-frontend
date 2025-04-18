@@ -61,19 +61,19 @@ body {
     margin-bottom: 10px;
 
   }
-  #progress-container {
+  .progress-bar-container {
     width: 100%;
     background-color: #eee;
     border-radius: 20px;
-    overflow: hidden;
-    height: 20px;
-    margin-bottom: 20px;
+    height: 8px;
+    margin-top:5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
   
-  #progress-bar {
+  .progress-bar-fill {
     height: 100%;
     width: 0%;
     background-color: #4caf50;
+    border-radius: 4px;
     transition: width 0.5s ease;
   }
