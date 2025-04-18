@@ -98,6 +98,7 @@ function showQuestion() {
 }
 
 function selectAnswer(index) {
+    if(nextButton.classList.contains("hide")=== false) return;
   clearInterval(timerInterval);
   const correctIndex = questions[currentQuestionIndex].answer;
   if (index === correctIndex) {
@@ -112,8 +113,9 @@ function selectAnswer(index) {
 }
 
 function disableOptions() {
-  Array.from(optionsElement.children).forEach(button => {
-      button.disabled = true;
+    const buttons = optionsElement.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.disabled = true;
   });
 }
 
