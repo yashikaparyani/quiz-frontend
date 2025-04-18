@@ -1,93 +1,171 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    color: white;
-  }
-  
-  .quiz-container {
-    background: white;
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    width: 400px;
-  }
-  
-  .btn-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    margin: 50px;
-  }
-  
-  .btn {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    font-size: 20px;
-    margin: 5px;
-  }
-  
-  .btn:hover {
-    background: #555;
-  }
-  
-  .correct {
-    background: green !important;
-  }
-  
-  .wrong {
-    background: red !important;
-  }
-  
-  .hide {
-    display: none;
-  } 
-  #timer{
-    font-size: 18px;
-    font-weight: bold;
-    color: rgb(243, 21, 21);
-    text-align: right;
-    margin-bottom: 10px;
+/* Reset basic styles */
+body, h1, h2, button {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+/* General body styling */
+body {
+  background: #f4f7fa;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+/* Quiz container */
+.quiz-container {
+  background: #fff;
+  padding: 30px 25px;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.quiz-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* Timer */
+#timer {
+  text-align: center;
+  font-weight: bold;
+  color: #e74c3c;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+/* Question text */
+#question {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #34495e;
+}
+
+/* Button container for each option + progress bar */
+.btn-container {
+  margin: 10px 0;
+}
+
+/* Option button */
+.btn-container button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #3498db;
+  border-radius: 12px;
+  background-color: #ecf6fd;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-container button:hover {
+  background-color: #d6ecfa;
+  transform: scale(1.02);
+}
+
+/* Correct and wrong answer styles */
+.correct {
+  background-color: #2ecc71 !important;
+  border-color: #27ae60 !important;
+  color: white;
+}
+
+.wrong {
+  background-color: #e74c3c !important;
+  border-color: #c0392b !important;
+  color: white;
+}
+
+/* Next button */
+#next-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+#next-btn:hover {
+  background-color: #2471a3;
+}
+
+/* Score display */
+#score {
+  text-align: center;
+  font-size: 20px;
+  color: #2c3e50;
+  margin-top: 20px;
+}
+
+/* Leaderboard button (added at the end) */
+.quiz-container .btn:last-child {
+  margin-top: 15px;
+  background-color: #8e44ad;
+  border-color: #8e44ad;
+}
+
+.quiz-container .btn:last-child:hover {
+  background-color: #732d91;
+}
+
+/* Hide class */
+.hide {
+  display: none;
+}
+
+/* Progress bar below each option */
+.progress-bar-container {
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #3498db;
+  transition: width 0.5s ease;
+  border-radius: 6px;
+}
+
+/* Responsive tweaks */
+@media screen and (max-width: 600px) {
+  .quiz-container {
+      padding: 20px 15px;
   }
-  .btn-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 10px;
-    width: 100%;
+
+  #question {
+      font-size: 18px;
   }
-  
-  .btn {
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    font-size: 16px;
+
+  .btn-container button {
+      font-size: 15px;
+      padding: 10px;
   }
-  
-  .progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background-color: #eee;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-top: 5px;
+
+  #next-btn {
+      font-size: 15px;
   }
-  
-  .progress-bar-fill {
-    height: 100%;
-    background-color: #4caf50;
-    width: 0%;
-    transition: width 0.5s ease-in-out;
+
+  #score {
+      font-size: 18px;
   }
+}
