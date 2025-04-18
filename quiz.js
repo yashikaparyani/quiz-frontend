@@ -70,15 +70,42 @@ function showQuestion() {
             fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
                 .then(res => res.json())
                 .then(data => {
-                  const buttons = optionsElement.querySelectorAll('button');
-                  data.forEach((percent, idx) => {
-                      const originalText = buttons[idx].innerText.split(" (")[0];
-                      buttons[idx].innerText = `${originalText} (${percent}%)`;
-                  });
+                    const optionBlocks = optionsElement.querySelectorAll('.btn-container');
+                    data.forEach((percent, idx) => {
+                        const btn = optionBlocks[idx].querySelector('button');
+                        const bar = optionBlocks[idx].querySelector('.option-progress-bar');
+                    
+                        // Update button text
+                        const baseText = btn.innerText.split(" (")[0];
+                        btn.innerText = `${baseText} (${percent}%)`;
+                    
+                        // Update progress bar width
+                        bar.style.width = `${percent}%`;
+                    });
               });
         });
     });
       optionsElement.appendChild(button);
+      // 1. Create a container for this option and its bar
+    const optionBlock = document.createElement('div');
+    optionBlock.classList.add('btn-container');
+
+// 2. Move the button into this new container
+    optionBlock.appendChild(button);
+
+// 3. Create the progress‐bar holder
+    const barHolder = document.createElement('div');
+    barHolder.classList.add('progress-container');
+
+// 4. Create the fill element
+    const barFill = document.createElement('div');
+    barFill.classList.add('option-progress-bar');
+    barFill.style.width = '0%';
+
+// 5. Assemble and attach
+    barHolder.appendChild(barFill);
+    optionBlock.appendChild(barHolder);
+    optionsElement.appendChild(optionBlock);
   });
 
   nextButton.classList.add("hide");
