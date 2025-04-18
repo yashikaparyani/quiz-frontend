@@ -50,13 +50,10 @@ function showQuestion() {
   optionsElement.innerHTML = "";
 
   questionData.options.forEach((option, index) => {
-    const optionContainer = document.createElement('div');
-    optionContainer.classList.add('option-container');
-
-    const button = document.createElement("button");
-    button.innerText = option;
-    button.classList.add("btn");
-    button.addEventListener("click", () => {
+      const button = document.createElement("button");
+      button.innerText = option;
+      button.classList.add("btn");
+      button.addEventListener("click", () => {
         selectAnswer(index);
         fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
             method: 'POST',
@@ -67,36 +64,21 @@ function showQuestion() {
                 question_id: currentQuestionIndex,
                 option_index: index
             })
-        }).then(() => {
-            return fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
-              .then(res => res.json())
-              .then(data => {
-                const buttons = optionsElement.querySelectorAll('button');
-                data.forEach((percent, idx) => {
-                  const originalText = buttons[idx].innerText.split('(')[0];
-                  buttons[idx].innerText = `${originalText} (${percent}%)`;
-                });
-          
-                document.querySelectorAll('.option-container').forEach((container, index) => {
-                  const bar = container.querySelector('.progress-bar');
-                  if (bar) {
-                    bar.style.width = `${data[index]}%`;
-                  }
-                });
+        })
+        .then(() => {
+            // Get updated percentages
+            fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
+                .then(res => res.json())
+                .then(data => {
+                  const buttons = optionsElement.querySelectorAll('button');
+                  data.forEach((percent, idx) => {
+                      const originalText = buttons[idx].innerText.split(" (")[0];
+                      buttons[idx].innerText = `${originalText} (${percent}%)`;
+                  });
               });
-          });
+        });
     });
-    const progressContainer = document.createElement('div');
-    progressContainer.classList.add('progress-container');
-
-    const progressBar = document.createElement('div');
-    progressBar.classList.add('progress-bar');
-    progressBar.style.width = '0%';
-    progressContainer.appendChild(progressBar);
-    button.progressBar = progressBar;
-    optionsElement.appendChild(button);
-    optionsContainer.appendChild(progressContainer);
-    optionsElement.appendChild(optionContainer);
+      optionsElement.appendChild(button);
   });
 
   nextButton.classList.add("hide");
