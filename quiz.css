@@ -90,3 +90,17 @@ body {
   width: 0%;
   transition: width 0.5s ease-in-out;
 }
+#next-btn{
+  background: hsl(212, 79%, 34%);
+  color: white;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 20px;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  transition: transform 0.5s ease;
+}
+#next-btn.swipe-right {
+  transform: translateX(200px);
+}

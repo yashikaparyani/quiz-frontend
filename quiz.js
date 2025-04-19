@@ -118,14 +118,18 @@ function disableOptions() {
         button.disabled = true;
   });
 }
-
 nextButton.addEventListener("click", () => {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < questions.length) {
-      showQuestion();
-  } else {
-      endQuiz();
-  }
+    nextButton.classList.add('swipe-right');
+    setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            endQuiz();
+        }
+        nextButton.classList.remove('swipe-right');
+    },500);
+ 
 });
 
 function endQuiz() {
