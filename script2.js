@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("login-form");
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit",async function (e) {
         e.preventDefault();
 
         const name = document.getElementById("username").value.trim();
         const email = document.getElementById("login-email").value.trim();
         const phone = document.getElementById("login-number").value.trim();
+        const password = document.getElementById('password').value;
 
         if (!name || !email || !phone) {
             alert("Please fill in all required fields.");
@@ -15,26 +16,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         localStorage.setItem("username", name);
 
-        fetch("https://flask-backend-9bjs.onrender.com/login", {
-            method: "POST",
+        const response = await fetch('https://flask-backend-9bjs.onrender.com/login', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, email, phone }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Login response:", data);
-            if (data.message === "Login successful") {
-                alert("Login successful!");
-                window.location.href = "quiz.html";
-            } else {
-                alert("Login failed. Please try again.");
-            }
-        })
-        .catch(error => {
-            console.error("Error during login:", error);
-            alert("An error occurred. Please try again later.");
-        });
+            body: JSON.stringify({ email, password })
+          });
+        
+          const result = await response.json();
+          const message = document.getElementById('message');
+        
+          if (result.status === 'success') {
+            message.style.color = 'green';
+            message.textContent = 'Login successful! Redirecting...';
+        
+            // Store user info if needed
+            localStorage.setItem('user', JSON.stringify(result));
+        
+            // Redirect to quiz
+            setTimeout(() => {
+              window.location.href = 'quiz.html';
+            }, 1500);
+          } else {
+            message.style.color = 'red';
+            message.textContent = result.message;
+          }
     });
 });

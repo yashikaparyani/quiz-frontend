@@ -12,11 +12,45 @@
         <form id="signup-form">
             <input type="text" id="signup-name" placeholder="Full Name" required>
             <input type="email" id="signup-email" placeholder="Email" required>
-            <input type="password" id="signup-password" placeholder="Password" required>
-            <button type="submit">Sign Up</button>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="tel" id="signup-number" placeholder="Phone Number" required />
+            <button type="submit" onclick="signup()">REGISTER</button>
             <p>Already have an account? <a href="login.html">Login</a></p>
         </form>
+        <div id="message"></div>
     </div>
-    <script src="script2.js"></script>
+    <script>
+        async function signup() {
+          const name = document.getElementById('signup-name').value.trim();
+          const email = document.getElementById('signup-email').value.trim();
+          const password = document.getElementById('password').value.trim();
+          const phone = document.getElementById('signup-number').value.trim();
+          const messageDiv = document.getElementById('message');
+    
+          if (!name || !email || !password || !phone) {
+            messageDiv.innerText = "Please fill all fields.";
+            return;
+          }
+    
+          try {
+            const res = await fetch('https://flask-backend-9bjs.onrender.com/signup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, password, phone })
+            });
+    
+            const data = await res.json();
+            messageDiv.innerText = data.message;
+    
+            if (data.success) {
+              setTimeout(() => {
+                window.location.href = 'login.html';
+              }, 1500);
+            }
+          } catch (error) {
+            messageDiv.innerText = "Error: " + error.message;
+          }
+        }
+      </script>
 </body>
 </html>
