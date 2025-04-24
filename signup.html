@@ -33,6 +33,7 @@
                 messageDiv.innerText = "Please fill all fields.";
                 return;
           }
+          console.log(name , email, password, phone)
     
             try {
                 const res = await fetch('https://flask-backend-9bjs.onrender.com/signup', {
