@@ -4,12 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit",async function (e) {
         e.preventDefault();
 
-        const name = document.getElementById("username").value.trim();
         const email = document.getElementById("login-email").value.trim();
-        const phone = document.getElementById("login-number").value.trim();
         const password = document.getElementById('password').value;
 
-        if (!name || !email || !phone) {
+        if ( !email || !password) {
             alert("Please fill in all required fields.");
             return;
         }
