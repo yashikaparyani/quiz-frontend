@@ -44,6 +44,7 @@
     
                 const data = await res.json();
                 messageDiv.innerText = data.message;
+                messageDiv.style.color = data.success ? 'green' : 'red' ;
     
                 if (data.success) {
                 setTimeout(() => {

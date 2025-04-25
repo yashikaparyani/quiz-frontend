@@ -28,7 +28,10 @@ document.addEventListener("DOMContentLoaded", function () {
             message.textContent = 'Login successful! Redirecting...';
         
             // Store user info if needed
-            localStorage.setItem('user', JSON.stringify(result));
+            localStorage.setItem('user', JSON.stringify({
+              name: result.name ,
+              email: email
+          }));
         
             // Redirect to quiz
             setTimeout(() => {
