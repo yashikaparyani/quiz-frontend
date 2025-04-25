@@ -31,6 +31,7 @@
     
             if (!name || !email || !password || !phone) {
                 messageDiv.innerText = "Please fill all fields.";
+                localStorage.setItem("username", name);
                 return;
           }
           console.log(name , email, password, phone)
