@@ -6,17 +6,19 @@
 }
 
 body {
-    background-color: #f5f5dc;
+    background-color: #f1e3c3;
     transition: background 0.3s ease;
 }
 
+/* Header */
 .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background-color: #fff;
+    background-color: white;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    color:#8170a7;
 }
 
 .nav ul {
@@ -30,21 +32,35 @@ body {
 
 .nav ul li a {
     text-decoration: none;
-    color: #031273;
+    color: #8170a7;
     font-weight: 500;
     transition: color 0.3s ease;
+    font-size:20px;
 }
 
 .nav ul li a:hover {
     color: #f39c12;
 }
 
+.nav-part-2 button {
+    background-color: #f39c12;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-part-2 button:hover {
+    background-color: #d97f00;
+}
+
 .hero {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     padding: 80px;
-    background: linear-gradient(to right, #031273, #5a67d8);
+    background: linear-gradient(to right, #5f4b8b, #d6c7f3);
     color: white;
     border-radius: 10px;
     margin: 20px;
@@ -52,6 +68,7 @@ body {
 
 .hero .content-left h1 {
     font-size: 50px;
+    font-weight: bold;
 }
 
 .hero .content-left p {
@@ -59,43 +76,41 @@ body {
     margin: 15px 0;
 }
 
+.hero .highlight {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
+}
+
 .features {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
     padding: 50px;
-    flex-wrap: wrap;
+    text-align: center;
 }
 
 .product {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    text-align: center;
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
-    gap: 20px;
 }
 
 .product:hover {
     transform: translateY(-10px);
 }
 
-.testimonials {
-    text-align: center;
-    padding: 50px;
-    background-color: #f8f9fa;
-}
-
-.testimonial-card {
-    background: white;
-    padding: 20px;
+.product img {
+    width: 100%;
+    height: auto;
     border-radius: 8px;
-    margin: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
 footer {
-    background: #031273;
+    background: #34495e;
     color: white;
     text-align: center;
     padding: 20px;
@@ -110,6 +125,7 @@ footer {
 .dark-mode .nav {
     background-color: #2a2a2a;
     box-shadow: none;
+    color:white;
 }
 
 .dark-mode .nav ul li a {
@@ -136,23 +152,14 @@ footer {
 
 /* Media Queries for Responsiveness */
 @media (max-width: 1024px) {
-    .nav {
-        padding: 20px 30px;
-    }
-
     .hero {
-        padding: 60px;
         flex-direction: column;
-        text-align: center;
-    }
-
-    .hero .content-left h1 {
-        font-size: 40px;
+        padding: 60px;
     }
 
     .features {
+        grid-template-columns: repeat(2, 1fr);
         padding: 30px;
-        justify-content: space-between;
     }
 
     .product {
@@ -174,74 +181,19 @@ footer {
         margin-top: 20px;
     }
 
-    .nav ul li {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
     .hero {
-        padding: 40px;
         flex-direction: column;
+        padding: 40px;
         text-align: center;
     }
 
-    .hero .content-left h1 {
-        font-size: 30px;
-    }
-
     .features {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         padding: 20px;
     }
 
     .product {
         max-width: 80%;
-        margin: 10px 0;
-    }
-
-    .testimonials {
-        padding: 30px;
-    }
-
-    .testimonial-card {
-        max-width: 80%;
         margin: 10px auto;
-    }
-}
-
-@media (max-width: 480px) {
-    .nav {
-        padding: 15px;
-    }
-
-    .hero {
-        padding: 20px;
-    }
-
-    .hero .content-left h1 {
-        font-size: 25px;
-    }
-
-    .features {
-        padding: 15px;
-        justify-content: center;
-    }
-
-    .product {
-        max-width: 90%;
-        margin: 15px 0;
-    }
-
-    .testimonials {
-        padding: 20px;
-    }
-
-    .testimonial-card {
-        max-width: 90%;
-        margin: 10px auto;
-    }
-
-    footer {
-        padding: 10px;
     }
 }
