@@ -36,20 +36,23 @@
           console.log(name , email, password, phone)
     
             try {
-                const res = await fetch('https://flask-backend-9bjs.onrender.com/signup', {
+                const response = await fetch('https://flask-backend-9bjs.onrender.com/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, password, phone })
             });
     
-                const data = await res.json();
-                messageDiv.innerText = data.message;
-                messageDiv.style.color = data.success ? 'green' : 'red' ;
+                const data = await response.json();
     
                 if (data.success) {
+                    messageDiv.style.color='green';
+                    messageDiv.textContent='signup successful!'
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 1500);
+                }else{
+                    messageDiv.style.color='red';
+                    messageDiv.textContent= data.message || 'signup failed';
                 }
             } catch (error) {
                 messageDiv.innerText = "Error: " + error.message;
