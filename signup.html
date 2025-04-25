@@ -31,7 +31,6 @@
     
             if (!name || !email || !password || !phone) {
                 messageDiv.innerText = "Please fill all fields.";
-                localStorage.setItem("username", name);
                 return;
           }
           console.log(name , email, password, phone)
@@ -48,6 +47,7 @@
                 if (data.success) {
                     messageDiv.style.color='green';
                     messageDiv.textContent='signup successful!'
+                    localStorage.setItem("username", name);
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 1500);
