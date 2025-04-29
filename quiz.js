@@ -217,6 +217,7 @@ function fetchLeaderboard() {
   }
   
   // Har 5 second me auto refresh karo leaderboard
+  window.onload = fetchLeaderboard;
   setInterval(fetchLeaderboard, 5000);
   
   // Jab page load ho to ek baar turant load karo
