@@ -104,3 +104,46 @@ body {
 #next-btn.swipe-right {
   transform: translateX(200px);
 }
+#live-leaderboard-section {
+  margin: 20px;
+  padding: 15px;
+  border: 2px solid #4caf50;
+  border-radius: 10px;
+  background-color: #f0fff0;
+  max-width: 400px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#live-leaderboard-section h3 {
+  margin-top: 0;
+  color: #2e7d32;
+  font-size: 20px;
+  text-align: center;
+  border-bottom: 1px solid #4caf50;
+  padding-bottom: 5px;
+}
+
+#live-leaderboard{
+  list-style: decimal; /* Numbered list */
+  padding-left: 20px;
+  margin: 0;
+}
+
+#live-leaderboard li {
+  padding: 6px 0;
+  border-bottom: 1px solid #d0e8d0;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+#live-leaderboard li span.name {
+  font-weight: bold;
+  color: #1b5e20;
+}
+
+#live-leaderboard li span.score {
+  color: #2e7d32;
+}
