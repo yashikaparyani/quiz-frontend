@@ -39,11 +39,10 @@ const quizContainer = document.querySelector(".quiz-container");
 const BACKEND_URL = "https://flask-backend-9bjs.onrender.com";
 
 function startQuiz() {
-
-    currentQuestionIndex = 0;
-    score = 0;
-    showQuestion();
-    }
+  currentQuestionIndex = 0;
+  score = 0;
+  showQuestion();
+}
 
 function showQuestion() {
   const questionData = questions[currentQuestionIndex];
@@ -111,14 +110,6 @@ function selectAnswer(index) {
   }
   disableOptions();
   nextButton.classList.remove("hide");
-  fetch("https://flask-backend-9bjs.onrender.com/update-score", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: userName, score: score })
-  });
-  fetchLeaderboard();
-
-
 }
 
 function disableOptions() {
@@ -183,7 +174,6 @@ function saveToBackend() {
   .then(res => res.json())
   .then(data => {
       console.log("Score saved:", data);
-      fetchLeaderboard();
   })
   .catch(err => {
       console.error("Failed to save score:", err);
@@ -204,31 +194,6 @@ function startTimer() {
       }
   }, 1000);
 }
-
-function fetchLeaderboard() {
-    fetch('https://flask-backend-9bjs.onrender.com/leaderboard')
-      .then(response => response.json())
-      .then(data => {
-        const leaderboardList = document.getElementById('leaderboard-list');
-        leaderboardList.innerHTML = ''; // Purana leaderboard clear karo
-  
-        data.forEach((entry, index) => {
-          const listItem = document.createElement('li');
-          listItem.textContent =`${index + 1}. ${entry.name} — ${entry.score}`;
-          leaderboardList.appendChild(listItem);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching leaderboard:', error);
-      });
-  }
-  
-  // Har 5 second me auto refresh karo leaderboard
-  window.onload = fetchLeaderboard;
-  setInterval(fetchLeaderboard, 5000);
-  
-  // Jab page load ho to ek baar turant load karo
-  fetchLeaderboard();
 
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
