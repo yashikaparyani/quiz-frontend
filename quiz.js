@@ -39,7 +39,7 @@ const quizContainer = document.querySelector(".quiz-container");
 const BACKEND_URL = "https://flask-backend-9bjs.onrender.com";
 
 function startQuiz() {
-    const username = localStorage.getItem("name") || "Anonymous";
+    const username = localStorage.getItem("username") || "Anonymous";
 
 // Initialize score in backend as 0
 fetch('https://flask-backend-9bjs.onrender.com/update-score', {
@@ -115,7 +115,7 @@ function selectAnswer(index) {
       fetch('https://flask-backend-9bjs.onrender.com/update-score', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ name: userName, score: score })
+        body: JSON.stringify({ name: username, score: score })
     });
   } else {
       optionsElement.children[index].classList.add("wrong");
