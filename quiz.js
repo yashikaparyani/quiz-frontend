@@ -39,14 +39,6 @@ const quizContainer = document.querySelector(".quiz-container");
 const BACKEND_URL = "https://flask-backend-9bjs.onrender.com";
 
 function startQuiz() {
-    const username = localStorage.getItem("username") || "Anonymous";
-
-// Initialize score in backend as 0
-fetch('https://flask-backend-9bjs.onrender.com/update-score', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ name: username, score: 0 })
-});
   currentQuestionIndex = 0;
   score = 0;
   showQuestion();
@@ -112,11 +104,6 @@ function selectAnswer(index) {
   if (index === correctIndex) {
       score++;
       optionsElement.children[index].classList.add("correct");
-      fetch('https://flask-backend-9bjs.onrender.com/update-score', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ name: username, score: score })
-    });
   } else {
       optionsElement.children[index].classList.add("wrong");
       optionsElement.children[correctIndex].classList.add("correct");
@@ -207,25 +194,6 @@ function startTimer() {
       }
   }, 1000);
 }
-
-function loadLeaderboard() {
-    fetch('https://flask-backend-9bjs.onrender.com/leaderboard')
-        .then(res => res.json())
-        .then(data => {
-            const leaderboardElement = document.getElementById('live-leaderboard');
-            leaderboardElement.innerHTML = '';
-
-            data.forEach((entry, index) => {
-                const item = document.createElement('div');
-                item.textContent = `${index + 1}. ${entry.name} - ${entry.score}`;
-                leaderboardElement.appendChild(item);
-            });
-        });
-}
-
-// Auto-refresh every 5 seconds
-setInterval(loadLeaderboard, 5000);
-loadLeaderboard();
 
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
