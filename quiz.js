@@ -98,6 +98,7 @@ function showQuestion() {
 }
 
 function selectAnswer(index) {
+    const username = localStorage.getItem("username") || "Guest";
     if(nextButton.classList.contains("hide")=== false) return;
   clearInterval(timerInterval);
   const correctIndex = questions[currentQuestionIndex].answer;
