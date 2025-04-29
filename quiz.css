@@ -105,45 +105,99 @@ body {
   transform: translateX(200px);
 }
 #live-leaderboard-section {
-  margin: 20px;
-  padding: 15px;
-  border: 2px solid #4caf50;
-  border-radius: 10px;
-  background-color: #f0fff0;
-  max-width: 400px;
-  font-family: Arial, sans-serif;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 280px;
+  background-color: #ffffff;
+  color: #333;
+  border: 2px solid #1e7f34;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
 }
 
 #live-leaderboard-section h3 {
-  margin-top: 0;
-  color: #2e7d32;
-  font-size: 20px;
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #1e7f34;
   text-align: center;
-  border-bottom: 1px solid #4caf50;
-  padding-bottom: 5px;
+  font-weight: 600;
+  border-bottom: 2px solid #1e7f34;
+  padding-bottom: 6px;
 }
 
-#live-leaderboard{
-  list-style: decimal; /* Numbered list */
-  padding-left: 20px;
+#live-leaderboard {
+  list-style: decimal;
+  padding-left: 18px;
   margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 #live-leaderboard li {
-  padding: 6px 0;
-  border-bottom: 1px solid #d0e8d0;
-  font-size: 16px;
+  padding: 6px 4px;
   display: flex;
   justify-content: space-between;
+  border-bottom: 1px solid #e0f2e9;
+  font-size: 15px;
   font-weight: 500;
 }
 
 #live-leaderboard li span.name {
-  font-weight: bold;
-  color: #1b5e20;
+  color: #0d4c24;
+  font-weight: 600;
 }
 
 #live-leaderboard li span.score {
   color: #2e7d32;
+}
+
+/* Scrollbar Styling */
+#live-leaderboard::-webkit-scrollbar {
+  width: 6px;
+}
+
+#live-leaderboard::-webkit-scrollbar-thumb {
+  background-color: #a5d6a7;
+  border-radius: 4px;
+}
+
+/* Tablet (768px and down) */
+@media (max-width: 768px) {
+  #live-leaderboard-section {
+    
+    padding: 12px;
+  }
+
+  #live-leaderboard-section h3 {
+    font-size: 18px;
+  }
+
+  #live-leaderboard li {
+    font-size: 14px;
+  }
+}
+
+/* Mobile (480px and down) */
+@media (max-width: 480px) {
+  #live-leaderboard-section {
+    width: 90%;
+    max-width: 320px;
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    padding: 10px;
+  }
+
+  #live-leaderboard-section h3 {
+    font-size: 17px;
+  }
+
+  #live-leaderboard li {
+    font-size: 13px;
+  }
 }
