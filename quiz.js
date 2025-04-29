@@ -104,6 +104,7 @@ function selectAnswer(index) {
   if (index === correctIndex) {
       score++;
       optionsElement.children[index].classList.add("correct");
+    sendLiveScore(username, score)
   } else {
       optionsElement.children[index].classList.add("wrong");
       optionsElement.children[correctIndex].classList.add("correct");
@@ -212,6 +213,21 @@ function fetchLiveScores() {
   }
   
   setInterval(fetchLiveScores, 5000);
+
+  function sendLiveScore(name, score) {
+    fetch('https://flask-backend-9bjs.onrender.com/update-live-score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: name, score: score })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log('Live score sent:', data.message);
+    })
+    .catch(err => console.error('Error updating live score:', err));
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
