@@ -199,7 +199,7 @@ function startTimer() {
 }
 
 function fetchLeaderboard() {
-    fetch('https://flask-backend-9bjs.onrender.com/get-leaderboard')
+    fetch('https://flask-backend-9bjs.onrender.com/leaderboard')
       .then(response => response.json())
       .then(data => {
         const leaderboardList = document.getElementById('leaderboard-list');
