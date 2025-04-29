@@ -195,6 +195,24 @@ function startTimer() {
   }, 1000);
 }
 
+function fetchLiveScores() {
+    fetch('https://flask-backend-9bjs.onrender.com/live-scores')
+      .then(res => res.json())
+      .then(data => {
+        const leaderboard = document.getElementById('live-leaderboard');
+        if (!leaderboard) return;
+        leaderboard.innerHTML = '';
+        data.forEach(entry => {
+          const li = document.createElement('li');
+          li.textContent = `${entry.name}: ${entry.score}`;
+          leaderboard.appendChild(li);
+        });
+      })
+      .catch(err => console.error('Live leaderboard error:', err));
+  }
+  
+  setInterval(fetchLiveScores, 5000);
+
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
   localStorage.setItem("username", username);
