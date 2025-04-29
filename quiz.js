@@ -212,7 +212,7 @@ function loadLeaderboard() {
     fetch('https://flask-backend-9bjs.onrender.com/leaderboard')
         .then(res => res.json())
         .then(data => {
-            const leaderboardElement = document.getElementById('leaderboard');
+            const leaderboardElement = document.getElementById('live-leaderboard');
             leaderboardElement.innerHTML = '';
 
             data.forEach((entry, index) => {
