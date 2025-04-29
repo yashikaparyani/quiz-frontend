@@ -213,7 +213,7 @@ function fetchLiveScores() {
       .catch(err => console.error('Live leaderboard error:', err));
   }
   
-  setInterval(fetchLiveScores, 5000);
+  setInterval(fetchLiveScores, 2000);
 
   function sendLiveScore(name, score) {
     fetch('https://flask-backend-9bjs.onrender.com/update-live-score', {
