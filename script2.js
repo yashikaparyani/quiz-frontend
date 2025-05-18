@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    localStorage.setItem("username", result.name);
+    
 
     const response = await fetch(
       "https://flask-backend-9bjs.onrender.com/login",
@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Store user info if needed
       localStorage.setItem("user", JSON.stringify(result));
+      localStorage.setItem("username", result.name);
 
       // Redirect to quiz
       setTimeout(() => {
