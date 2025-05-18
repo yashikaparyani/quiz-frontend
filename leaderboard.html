@@ -76,5 +76,16 @@
     </div>
 
     <script src="leaderboard.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io("https://flask-backend-9bjs.onrender.com");
+
+        socket.on("leaderboard_update", data => {
+            console.log("Leaderboard updated:", data);
+    // Yahan tum dynamically leaderboard data fetch karke update kar sakti ho
+    // ya table ke andar naya row insert kar sakti ho
+            fetchLeaderboard(); // custom function
+  });
+    </script>
 </body>
 </html>
