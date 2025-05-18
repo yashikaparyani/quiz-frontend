@@ -123,14 +123,14 @@ function showQuestion() {
 }
 
 function selectAnswer(index) {
-    const username = localStorage.getItem("username") || "Guest";
+    const name = localStorage.getItem("name") || "Guest";
     if(nextButton.classList.contains("hide")=== false) return;
   clearInterval(timerInterval);
   const correctIndex = questions[currentQuestionIndex].answer;
   if (index === correctIndex) {
       score++;
       optionsElement.children[index].classList.add("correct");
-    sendLiveScore(username, score)
+    sendLiveScore(name, score)
   } else {
       optionsElement.children[index].classList.add("wrong");
       optionsElement.children[correctIndex].classList.add("correct");
@@ -185,8 +185,8 @@ function endQuiz() {
 }
 
 function saveToBackend() {
-  const username = localStorage.getItem("username") || "Guest";
-  console.log("Submitting score to backend:", username, score);
+  const name = localStorage.getItem("name") || "Guest";
+  console.log("Submitting score to backend:", name, score);
 
   fetch(`${BACKEND_URL}/leaderboard`, {
       method: "POST",
@@ -194,7 +194,7 @@ function saveToBackend() {
           "Content-Type": "application/json"
       },
       body: JSON.stringify({
-          name: username,
+          name: name,
           score: score
       })
   })
@@ -256,7 +256,7 @@ function fetchLiveScores() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
-  localStorage.setItem("username", username);
+  const name = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
+  localStorage.setItem("name", name);
   startQuiz();
 });
