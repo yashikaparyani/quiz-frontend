@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Please fill in all required fields.");
       return;
     }
-
+    console.log(email, password);
     fetch("https://flask-backend-9bjs.onrender.com/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
