@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("login-form");
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const email = document.getElementById("login-email").value.trim();
@@ -12,12 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     console.log(email, password);
-    fetch("https://flask-backend-9bjs.onrender.com/login", {
+    const response = await fetch("https://flask-backend-9bjs.onrender.com/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     })
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           // Store user info if needed
