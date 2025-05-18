@@ -110,7 +110,7 @@ function showQuestion() {
     const progressBar = document.createElement("div");
     progressBar.classList.add("progress-bar-container");
     progressBar.id = `progress-${index}`;
-    progressBar.innerHTML = <div class="progress-bar-fill"></div>;
+    progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
 
     buttonWrapper.appendChild(button);
     buttonWrapper.appendChild(progressBar);
