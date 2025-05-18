@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Qnect Quiz</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Welcome to Qnect Quiz</h1>
+  <p>Waiting for the admin to start the quiz...</p>
+
+  <script>
+    const socket = io("https://flask-backend-9bjs.onrender.com"); 
+
+    socket.on("start_quiz", () => {
+      // Redirect to the actual quiz page
+      window.location.href = "quiz.html";
+    });
+  </script>
+</body>
+</html>
