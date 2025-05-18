@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const result = await response.json();
     const message = document.getElementById("message");
 
+
+    
     if (result.success === "true") {
       message.style.color = "green";
       message.textContent = "Login successful! Redirecting...";
