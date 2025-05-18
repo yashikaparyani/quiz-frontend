@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    localStorage.setItem("name", name);
+    localStorage.setItem("username", username);
 
     const response = await fetch(
       "https://flask-backend-9bjs.onrender.com/login",

@@ -10,7 +10,7 @@
     <div class="form-container">
         <h2>Sign Up</h2>
         <form id="signup-form">
-            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="text" id="username" placeholder="Full Name" required>
             <input type="email" id="signup-email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
             <input type="tel" id="signup-number" placeholder="Phone Number" required />
@@ -23,7 +23,7 @@
         document.getElementById('signup-form').addEventListener('submit', async function(e){
             e.preventDefault();
 
-            const name = document.getElementById('name').value.trim();
+            const name = document.getElementById('username').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('password').value.trim();
             const phone = document.getElementById('signup-number').value.trim();
@@ -47,7 +47,7 @@
                 if (data.success) {
                     messageDiv.style.color='green';
                     messageDiv.textContent='signup successful!'
-                    localStorage.setItem("name", name);
+                    localStorage.setItem("username", name);
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 1500);
