@@ -98,7 +98,7 @@ function showQuestion() {
                     const buttons = optionsElement.querySelectorAll('button');
                     data.forEach((percent, idx) => {
                         const originalText = buttons[idx].innerText.split(" (")[0];
-                        buttons[idx].innerText = `${originalText} (${percent}%)`;
+                        buttons[idx].innerText =` ${originalText} (${percent}%)`;
 
                         const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
                         if (fill) fill.style.width = `${percent}%`;
@@ -110,7 +110,7 @@ function showQuestion() {
     const progressBar = document.createElement("div");
     progressBar.classList.add("progress-bar-container");
     progressBar.id = `progress-${index}`;
-    progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
+    progressBar.innerHTML = <div class="progress-bar-fill"></div>;
 
     buttonWrapper.appendChild(button);
     buttonWrapper.appendChild(progressBar);
@@ -231,7 +231,7 @@ function fetchLiveScores() {
         leaderboard.innerHTML = '';
         data.forEach(entry => {
           const li = document.createElement('li');
-          li.textContent = `${entry.name}: ${entry.score}`;
+          li.textContent =`${entry.name}: ${entry.score}`;
           leaderboard.appendChild(li);
         });
       })
