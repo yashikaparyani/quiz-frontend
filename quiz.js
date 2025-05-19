@@ -136,7 +136,6 @@ function selectAnswer(index) {
       optionsElement.children[correctIndex].classList.add("correct");
   }
   disableOptions();
-  nextButton.classList.remove("hide");
 }
 
 function disableOptions() {
@@ -254,6 +253,10 @@ function fetchLiveScores() {
     })
     .catch(err => console.error('Error updating live score:', err));
 }
+socket.on('question_update', (data) => {
+  currentQuestionIndex = data.index;
+  showQuestion(); // or however you load questions
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";

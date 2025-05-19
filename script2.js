@@ -36,12 +36,14 @@ document.addEventListener("DOMContentLoaded", function () {
       // Store user info if needed
       localStorage.setItem("user", JSON.stringify(result));
       localStorage.setItem("username", result.name);
+      localStorage.setItem('role', result.role)
 
-      // Redirect to quiz
-      setTimeout(() => {
-        window.location.href = "quiz.html";
-      }, 1500);
-    } else {
+      if(data.role === 'admin'){
+        window.location.href = 'admin_panel.html';
+      } else {
+        window.location.href = 'welcome.html';
+      }
+    }else{
       message.style.color = "red";
       message.textContent = result.message;
     }
