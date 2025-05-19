@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("username", result.name);
       localStorage.setItem('role', result.role)
 
-      if(data.role === 'admin'){
+      if(result.role === 'admin'){
         window.location.href = 'admin_panel.html';
       } else {
         window.location.href = 'welcome.html';
