@@ -30,28 +30,6 @@ function showQuestion() {
     button.classList.add("btn");
     button.addEventListener("click", () => {
         selectAnswer(index);
-        fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                question_id: currentQuestionIndex,
-                option_index: index
-            })
-        })
-        .then(() => {
-            fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
-                .then(res => res.json())
-                .then(data => {
-                    const buttons = optionsElement.querySelectorAll('button');
-                    data.forEach((percent, idx) => {
-                        const originalText = buttons[idx].innerText.split(" (")[0];
-                        buttons[idx].innerText =` ${originalText} (${percent}%)`;
-
-                        const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-                        if (fill) fill.style.width = `${percent}%`;
-                    });
-                });
-        });
     });
 
     const progressBar = document.createElement("div");
@@ -62,7 +40,7 @@ function showQuestion() {
     buttonWrapper.appendChild(button);
     buttonWrapper.appendChild(progressBar);
     optionsElement.appendChild(buttonWrapper);
-});
+  });
 
   nextButton.classList.add("hide");
   scoreElement.innerText = `Score: ${score}`;
@@ -96,70 +74,7 @@ function disableOptions() {
         button.disabled = true;
     });
 }
-nextButton.addEventListener("click", () => {
-    nextButton.classList.add('swipe-right');
-    setTimeout(() => {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-            showQuestion();
-        } else {
-            endQuiz();
-        }
-        nextButton.classList.remove('swipe-right');
-    },500);
- 
-});
 
-function endQuiz() {
-  questionElement.innerText = "Quiz Completed!";
-  optionsElement.innerHTML = "";
-  nextButton.classList.add("hide");
-  scoreElement.classList.remove("hide");
-  scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
-
-  // Auto submit the score
-  saveToBackend();
-
-  // Add leaderboard button
-  const leaderboardBtn = document.createElement("button");
-  leaderboardBtn.innerText = "View Leaderboard";
-  leaderboardBtn.classList.add("btn", "leaderboard-btn");
-  leaderboardBtn.style.marginTop = "20px";
-  leaderboardBtn.addEventListener("click", () => {
-      window.location.href = "leaderboard.html";
-  });
-  quizContainer.appendChild(leaderboardBtn);
-
-  const timerElement = document.getElementById("timer");
-  if (timerElement) {
-      timerElement.style.display = "none";
-  }
-}
-
-function saveToBackend() {
-  const username = localStorage.getItem("username") || "Guest";
-  console.log("Submitting score to backend:", username, score);
-
-  fetch(`${BACKEND_URL}/leaderboard`, {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-          name: username,
-          score: score
-      })
-  })
-  .then(res => res.json())
-  .then(data => {
-      console.log("Score saved:", data);
-  })
-  .catch(err => {
-      console.error("Failed to save score:", err);
-  });
-}
-
-let timeleft = 10;
 function startTimer() {
     clearInterval(timerInterval);
     timeleft = 10;
@@ -185,7 +100,7 @@ function startTimer() {
                 }
             });
             
-            // Fetch and display percentages
+            // Fetch and display percentages only after timer ends
             fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
                 .then(res => res.json())
                 .then(data => {
@@ -193,7 +108,6 @@ function startTimer() {
                         const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
                         if (fill) {
                             fill.style.width = `${percent}%`;
-                            // Add percentage text
                             const percentageText = document.createElement('span');
                             percentageText.className = 'percentage-text';
                             percentageText.textContent = `${percent}%`;
@@ -201,14 +115,54 @@ function startTimer() {
                         }
                     });
                 });
-            
-            // Show next button after a short delay
-            setTimeout(() => {
-                nextButton.classList.remove("hide");
-            }, 2000);
         }
     }, 1000);
 }
+
+function endQuiz() {
+  questionElement.innerText = "Quiz Completed!";
+  optionsElement.innerHTML = "";
+  scoreElement.classList.remove("hide");
+  scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
+
+  // Auto submit the score and redirect to leaderboard
+  saveToBackend();
+
+  const timerElement = document.getElementById("timer");
+  if (timerElement) {
+      timerElement.style.display = "none";
+  }
+}
+
+function saveToBackend() {
+  const username = localStorage.getItem("username") || "Guest";
+  console.log("Submitting score to backend:", username, score);
+
+  fetch(`${BACKEND_URL}/leaderboard`, {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          name: username,
+          score: score,
+          total_questions: questions.length
+      })
+  })
+  .then(res => res.json())
+  .then(data => {
+      console.log("Score saved:", data);
+      // After saving score, redirect to leaderboard
+      window.location.href = "leaderboard.html";
+  })
+  .catch(err => {
+      console.error("Failed to save score:", err);
+      // Even if save fails, still show leaderboard
+      window.location.href = "leaderboard.html";
+  });
+}
+
+let timeleft = 10;
 
 function fetchLiveScores() {
     fetch('https://flask-backend-9bjs.onrender.com/live-scores')
@@ -263,28 +217,6 @@ socket.on('question_update', (data) => {
       button.classList.add("btn");
       button.addEventListener("click", () => {
         selectAnswer(index);
-        fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question_id: currentQuestionIndex,
-            option_index: index
-          })
-        })
-        .then(() => {
-          fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
-            .then(res => res.json())
-            .then(data => {
-              const buttons = optionsElement.querySelectorAll('button');
-              data.forEach((percent, idx) => {
-                const originalText = buttons[idx].innerText.split(" (")[0];
-                buttons[idx].innerText = `${originalText} (${percent}%)`;
-
-                const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-                if (fill) fill.style.width = `${percent}%`;
-              });
-            });
-        });
       });
 
       const progressBar = document.createElement("div");
@@ -312,3 +244,6 @@ document.addEventListener("DOMContentLoaded", () => {
   localStorage.setItem("username", username);
   startQuiz();
 });
+
+// Remove the next button click handler since admin controls question changes
+nextButton.style.display = 'none';
