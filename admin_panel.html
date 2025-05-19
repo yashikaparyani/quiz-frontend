@@ -33,12 +33,19 @@
     
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
       if (currentQuestionIndex < window.questions.length) {
+        const questionData = window.questions[currentQuestionIndex];
         socket.emit('next_question', {
             questionId: currentQuestionIndex,
-            questionData: window.questions[currentQuestionIndex]
+            questionData: {
+                question: questionData.question,
+                options: questionData.options,
+                answer: questionData.answer
+            }
         });
         currentQuestionIndex++;
-      } 
+      } else {
+        alert('No more questions!');
+      }
     });
   </script>
 </body>
