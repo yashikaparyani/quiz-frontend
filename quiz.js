@@ -201,15 +201,33 @@ function fetchLiveScores() {
     .catch(err => console.error('Error updating live score:', err));
 }
 const socket = io("https://flask-backend-9bjs.onrender.com", {
-        transports: ['websocket', 'polling'],
-        withCredentials: true
-    });  
+    transports: ['websocket', 'polling'],
+    withCredentials: true
+});  
+
+// Add connection status logging
+socket.on('connect', () => {
+    console.log('Client connected to server');
+});
+
+socket.on('disconnect', () => {
+    console.log('Client disconnected from server');
+});
+
+socket.on('quiz_started', (data) => {
+    console.log('Quiz started event received:', data);
+    startQuiz();
+});
+
 socket.on('question_update', (data) => {
-  console.log("Got new question", data);
-  if (data.questionData) {
-    currentQuestionIndex = data.questionId;
-    showQuestion();
-  }
+    console.log("Received question update:", data);
+    if (data && data.questionData) {
+        currentQuestionIndex = data.questionId;
+        console.log('Updating to question index:', currentQuestionIndex);
+        showQuestion();
+    } else {
+        console.error('Invalid question data received:', data);
+    }
 });
 
 document.addEventListener("DOMContentLoaded", () => {

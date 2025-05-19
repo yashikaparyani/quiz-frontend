@@ -21,25 +21,48 @@
         transports: ['websocket', 'polling'],
         withCredentials: true
     });
+
+    // Add connection status logging
+    socket.on('connect', () => {
+        console.log('Admin panel connected to server');
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Admin panel disconnected from server');
+    });
+
     let currentQuestionIndex = 0;
     socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
+    
     document.getElementById('startQuizBtn').addEventListener('click', () => {
-      
+      console.log('Start quiz button clicked');
       socket.emit('start_quiz' ,{});
       alert('Quiz started! Users will be redirected.');
     });
 
-    // Optionally, send admin login info on connect
-    
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+      console.log('Next button clicked, current index:', currentQuestionIndex);
+      console.log('Total questions:', window.questions ? window.questions.length : 'undefined');
+      
+      if (!window.questions) {
+        console.error('Questions array is not defined!');
+        alert('Error: Questions not loaded!');
+        return;
+      }
+
       if (currentQuestionIndex < window.questions.length) {
         const questionData = window.questions[currentQuestionIndex];
+        console.log('Sending question data:', questionData);
+        
         socket.emit('next_question', {
             questionId: currentQuestionIndex,
             questionData: questionData
+        }, (response) => {
+            console.log('Server response:', response);
         });
+        
         currentQuestionIndex++;
-        console.log('Sent next question:', currentQuestionIndex);
+        console.log('Updated currentQuestionIndex to:', currentQuestionIndex);
       } else {
         alert('No more questions!');
       }
