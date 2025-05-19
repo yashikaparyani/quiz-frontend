@@ -11,9 +11,9 @@
 </head>
 <body>
   <div id="welcomeMsg">Welcome to the Quiz! Waiting for the admin to start...</div>
-
+<script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
+    const socket = io('https://flask-backend-9bjs.onrender.com');
 
     // Receive start-quiz event from admin
     socket.on('quiz_started', () => {
