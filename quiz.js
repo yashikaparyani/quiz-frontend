@@ -1,4 +1,3 @@
-
 let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
@@ -17,8 +16,10 @@ function startQuiz() {
   showQuestion();
 }
 
-function showQuestion() {
-  const questionData = questions[currentQuestionIndex];
+function showQuestion(questionData) {
+  if (!questionData) {
+    questionData = window.questions[currentQuestionIndex];
+  }
   questionElement.innerText = questionData.question;
   optionsElement.innerHTML = "";
 
@@ -206,12 +207,15 @@ const socket = io("https://flask-backend-9bjs.onrender.com", {
         withCredentials: true
     });  
 socket.on('question_update', (data) => {
-  console.log("Got new question", data);
-  showQuestion(data.questionData); 
+    console.log("Received question update:", data);
+    if (data && data.questionData) {
+        currentQuestionIndex = data.questionId;
+        showQuestion(data.questionData);
+    }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
+  const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
   localStorage.setItem("username", username);
-  startQuiz();
+  // Do not call startQuiz() here; quiz will start when admin triggers it
 });
