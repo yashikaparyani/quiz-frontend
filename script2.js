@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Store user info if needed
       localStorage.setItem("user", JSON.stringify(result));
-      localStorage.setItem("username", result.name);
+      localStorage.setItem("username", result.username);
       localStorage.setItem('role', result.role)
 
       if(result.role === 'admin'){
