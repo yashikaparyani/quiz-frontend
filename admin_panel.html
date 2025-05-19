@@ -22,7 +22,7 @@
 
     document.getElementById('startQuizBtn').addEventListener('click', () => {
       // Notify backend/admin server to start quiz for all users
-      socket.emit('start_quiz');
+      socket.emit('start_quiz' ,{});
       alert('Quiz started! Users will be redirected.');
     });
 
