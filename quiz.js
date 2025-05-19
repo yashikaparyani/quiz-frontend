@@ -256,7 +256,7 @@ function fetchLiveScores() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
+  const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
   localStorage.setItem("username", username);
   startQuiz();
 });
