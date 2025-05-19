@@ -1,4 +1,3 @@
-
 let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
@@ -207,7 +206,10 @@ const socket = io("https://flask-backend-9bjs.onrender.com", {
     });  
 socket.on('question_update', (data) => {
   console.log("Got new question", data);
-  showQuestion(data.questionData); 
+  if (data.questionData) {
+    currentQuestionIndex = data.questionId;
+    showQuestion();
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {

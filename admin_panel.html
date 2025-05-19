@@ -33,12 +33,16 @@
     
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
       if (currentQuestionIndex < window.questions.length) {
+        const questionData = window.questions[currentQuestionIndex];
         socket.emit('next_question', {
             questionId: currentQuestionIndex,
-            questionData: window.questions[currentQuestionIndex]
+            questionData: questionData
         });
         currentQuestionIndex++;
-      } 
+        console.log('Sent next question:', currentQuestionIndex);
+      } else {
+        alert('No more questions!');
+      }
     });
   </script>
 </body>
