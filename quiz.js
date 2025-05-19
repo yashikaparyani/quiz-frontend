@@ -253,6 +253,10 @@ function fetchLiveScores() {
     })
     .catch(err => console.error('Error updating live score:', err));
 }
+const socket = io("https://flask-backend-9bjs.onrender.com", {
+        transports: ['websocket', 'polling'],
+        withCredentials: true
+    });  
 socket.on('question_update', (data) => {
   currentQuestionIndex = data.index;
   showQuestion(); // or however you load questions
