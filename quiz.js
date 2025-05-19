@@ -72,24 +72,29 @@ function showQuestion() {
 function selectAnswer(index) {
     const username = localStorage.getItem("username") || "Guest";
     if(nextButton.classList.contains("hide")=== false) return;
-  clearInterval(timerInterval);
-  const correctIndex = questions[currentQuestionIndex].answer;
-  if (index === correctIndex) {
-      score++;
-      optionsElement.children[index].classList.add("correct");
-    sendLiveScore(username, score)
-  } else {
-      optionsElement.children[index].classList.add("wrong");
-      optionsElement.children[correctIndex].classList.add("correct");
-  }
-  disableOptions();
+    
+    // Remove any previous selections
+    const buttons = optionsElement.querySelectorAll('button');
+    buttons.forEach(btn => {
+        btn.classList.remove("selected");
+    });
+    
+    // Add selected class to current selection
+    buttons[index].classList.add("selected");
+    
+    // Store the selected answer
+    const correctIndex = questions[currentQuestionIndex].answer;
+    if (index === correctIndex) {
+        score++;
+        sendLiveScore(username, score);
+    }
 }
 
 function disableOptions() {
     const buttons = optionsElement.querySelectorAll('button');
     buttons.forEach(button => {
         button.disabled = true;
-  });
+    });
 }
 nextButton.addEventListener("click", () => {
     nextButton.classList.add('swipe-right');
@@ -115,10 +120,11 @@ function endQuiz() {
   // Auto submit the score
   saveToBackend();
 
-  // Add leaderboard button (still optional)
+  // Add leaderboard button
   const leaderboardBtn = document.createElement("button");
   leaderboardBtn.innerText = "View Leaderboard";
-  leaderboardBtn.classList.add("btn");
+  leaderboardBtn.classList.add("btn", "leaderboard-btn");
+  leaderboardBtn.style.marginTop = "20px";
   leaderboardBtn.addEventListener("click", () => {
       window.location.href = "leaderboard.html";
   });
@@ -155,17 +161,53 @@ function saveToBackend() {
 
 let timeleft = 10;
 function startTimer() {
-  clearInterval(timerInterval);
-  timeleft = 10;
-  document.getElementById("time-left").innerText = timeleft;
-  timerInterval = setInterval(() => {
-      timeleft--;
-      document.getElementById("time-left").innerText = timeleft;
-      if (timeleft === 0) {
-          clearInterval(timerInterval);
-          nextButton.click();
-      }
-  }, 1000);
+    clearInterval(timerInterval);
+    timeleft = 10;
+    document.getElementById("time-left").innerText = timeleft;
+    timerInterval = setInterval(() => {
+        timeleft--;
+        document.getElementById("time-left").innerText = timeleft;
+        if (timeleft === 0) {
+            clearInterval(timerInterval);
+            disableOptions();
+            
+            // Show correct answer
+            const correctIndex = questions[currentQuestionIndex].answer;
+            const buttons = optionsElement.querySelectorAll('button');
+            
+            // Remove selected class and add correct/wrong classes
+            buttons.forEach((btn, idx) => {
+                btn.classList.remove("selected");
+                if (idx === correctIndex) {
+                    btn.classList.add("correct");
+                } else if (btn.classList.contains("selected")) {
+                    btn.classList.add("wrong");
+                }
+            });
+            
+            // Fetch and display percentages
+            fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach((percent, idx) => {
+                        const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+                        if (fill) {
+                            fill.style.width = `${percent}%`;
+                            // Add percentage text
+                            const percentageText = document.createElement('span');
+                            percentageText.className = 'percentage-text';
+                            percentageText.textContent = `${percent}%`;
+                            fill.appendChild(percentageText);
+                        }
+                    });
+                });
+            
+            // Show next button after a short delay
+            setTimeout(() => {
+                nextButton.classList.remove("hide");
+            }, 2000);
+        }
+    }, 1000);
 }
 
 function fetchLiveScores() {

@@ -5,13 +5,101 @@
     <title>JavaScript Quiz</title>
     <link rel="stylesheet" href="quiz.css">
     <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <style>
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .percentage-text {
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+
+        #live-leaderboard-section {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            width: 100%;
+        }
+
+        #live-leaderboard {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #live-leaderboard li {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .btn.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn.correct {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn.wrong {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .leaderboard-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .leaderboard-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <!-- Progress Bar -->
     
     <div class="quiz-container">
         <h1>JavaScript Quiz</h1>
-        <div id="timer">Time Left:<span id="time-left"></span> seconds</div>
+        <div id="timer">Time Left: <span id="time-left"></span> seconds</div>
         <div id="question-container">
             <h2 id="question">Loading...</h2>
             <div id="options" class="btn-container"></div>
@@ -20,10 +108,10 @@
         <h2 id="score" class="hide">Your Score: 0</h2>
         
     </div>
-    <div id="live-leaderboard-section" style="border: 2px solid #4CAF50; border-radius: 10px; padding: 15px; width: 250px; background-color: #f9f9f9;">
-        <h3 style="text-align:center; color:#4CAF50;">Live Leaderboard</h3>
-        <ol id="live-leaderboard" style="list-style: none; padding: 0; color:#4CAF50"></ul>
-      </div>
+    <div id="live-leaderboard-section">
+        <h3>Live Leaderboard</h3>
+        <ol id="live-leaderboard"></ol>
+    </div>
     
 
       <script src="quiz_data.js"></script>
