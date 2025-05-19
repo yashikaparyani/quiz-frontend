@@ -15,20 +15,15 @@
     const socket = io("https://flask-backend-9bjs.onrender.com", {
         transports: ['websocket', 'polling'],
         withCredentials: true
-    });
-
-    // Receive start-quiz event from admin
-    socket.on('quiz_started', () => {
-      // Redirect user to quiz page or load quiz
-      window.location.href = "quiz.html"; // or wherever your quiz runs
-    });
-
-    // Send username on connection (assuming stored in localStorage)
-    socket.emit('user-join', { username: localStorage.getItem('username') || 'Guest' });
+    });                              
+    
 
     socket.emit('join', {
         username: localStorage.getItem('username') || 'Guest',
         room: 'quiz_room'
+    });
+    socket.on('quiz_started', () => {
+      window.location.href = "quiz.html"; // or wherever your quiz runs
     });
   </script>
 </body>
