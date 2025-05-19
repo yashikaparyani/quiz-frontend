@@ -63,8 +63,12 @@ function selectAnswer(index) {
     // Store the selected answer
     const correctIndex = questions[currentQuestionIndex].answer;
     if (index === correctIndex) {
+        // Add 1 mark only for correct answer
         score++;
+        console.log("Correct answer! Score:", score);
         sendLiveScore(username, score);
+    } else {
+        console.log("Wrong answer. Score remains:", score);
     }
 }
 
@@ -97,10 +101,12 @@ function startTimer() {
                     btn.classList.add("correct");
                 } else if (btn.classList.contains("selected")) {
                     btn.classList.add("wrong");
+                    // Add animation for wrong answer
+                    btn.style.animation = "shake 0.5s";
                 }
             });
             
-            // Fetch and display percentages only after timer ends
+            // Fetch and display percentages
             fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
                 .then(res => res.json())
                 .then(data => {
@@ -120,46 +126,57 @@ function startTimer() {
 }
 
 function endQuiz() {
-  questionElement.innerText = "Quiz Completed!";
-  optionsElement.innerHTML = "";
-  scoreElement.classList.remove("hide");
-  scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
+    questionElement.innerText = "Quiz Completed!";
+    optionsElement.innerHTML = "";
+    scoreElement.classList.remove("hide");
+    // Show final score out of total questions
+    scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
+    console.log("Quiz ended. Final score:", score, "out of", questions.length);
 
-  // Auto submit the score and redirect to leaderboard
-  saveToBackend();
+    // Add leaderboard button
+    const leaderboardBtn = document.createElement("button");
+    leaderboardBtn.innerText = "View Leaderboard";
+    leaderboardBtn.classList.add("btn", "leaderboard-btn");
+    leaderboardBtn.style.marginTop = "20px";
+    leaderboardBtn.addEventListener("click", () => {
+        saveToBackend();
+    });
+    quizContainer.appendChild(leaderboardBtn);
 
-  const timerElement = document.getElementById("timer");
-  if (timerElement) {
-      timerElement.style.display = "none";
-  }
+    const timerElement = document.getElementById("timer");
+    if (timerElement) {
+        timerElement.style.display = "none";
+    }
 }
 
 function saveToBackend() {
-  const username = localStorage.getItem("username") || "Guest";
-  console.log("Submitting score to backend:", username, score);
+    const username = localStorage.getItem("username") || "Guest";
+    // Ensure score doesn't exceed total questions
+    const finalScore = Math.min(score, questions.length);
+    console.log("Submitting score to backend:", username, finalScore);
 
-  fetch(`${BACKEND_URL}/leaderboard`, {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-          name: username,
-          score: score,
-          total_questions: questions.length
-      })
-  })
-  .then(res => res.json())
-  .then(data => {
-      console.log("Score saved:", data);
-      // After saving score, redirect to leaderboard
-      window.location.href = "leaderboard.html";
-  })
-  .catch(err => {
-      console.error("Failed to save score:", err);
-      // Even if save fails, still show leaderboard
-      window.location.href = "leaderboard.html";
-  });
+    fetch(`${BACKEND_URL}/leaderboard`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: username,
+            score: finalScore,
+            total_questions: questions.length
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Score saved:", data);
+        window.location.href = "leaderboard.html";
+    })
+    .catch(err => {
+        console.error("Failed to save score:", err);
+        // Show error message but still allow going to leaderboard
+        alert("Failed to save score, but you can still view the leaderboard");
+        window.location.href = "leaderboard.html";
+    });
 }
 
 let timeleft = 10;

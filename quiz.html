@@ -63,18 +63,30 @@
         }
 
         .btn.selected {
-            background-color: #2196F3;
-            color: white;
+            background-color: #2196F3 !important;
+            color: white !important;
+            border: 2px solid #1976D2;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
         }
 
         .btn.correct {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #4CAF50 !important;
+            color: white !important;
+            border: 2px solid #388E3C;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
         .btn.wrong {
-            background-color: #f44336;
-            color: white;
+            background-color: #f44336 !important;
+            color: white !important;
+            border: 2px solid #d32f2f;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3);
         }
 
         .leaderboard-btn {
@@ -88,10 +100,20 @@
             transition: background-color 0.3s ease;
             display: block;
             margin: 20px auto;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .leaderboard-btn:hover {
             background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .leaderboard-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         #next-btn {
