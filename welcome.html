@@ -16,12 +16,9 @@
         transports: ['websocket', 'polling'],
         withCredentials: true
     });                              
-    
+    const username= localStorage.getItem('username') || 'Guest';
 
-    socket.emit('join', {
-        username: localStorage.getItem('username') || 'Guest',
-        room: 'quiz_room'
-    });
+    socket.emit('join', { username });
     socket.on('quiz_started', () => {
       window.location.href = "quiz.html"; // or wherever your quiz runs
     });
