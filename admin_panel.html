@@ -13,6 +13,7 @@
   <h1>Admin Panel</h1>
   <button id="startQuizBtn">Start Quiz</button>
   <button id="nextQuestionBtn">Next Question</button>
+  <script src="question.js"></script>
   <script src="script2.js"></script>
 
   <script>
@@ -30,7 +31,11 @@
     // Optionally, send admin login info on connect
     socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
-    socket.emit('next_question', { index: currentIndex });
+    socket.emit('next_question', {
+        questionId: currentQuestionIndex,
+        questionData: questions[currentQuestionIndex]
+    });
+    currentQuestionIndex++;
 });
   </script>
 </body>
