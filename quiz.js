@@ -1,10 +1,7 @@
+
 let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
-let hasAnswered = false;
-let answerCount = 0;
-let totalUsers = 0;
-let isShowingResults = false;
 
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
@@ -73,108 +70,20 @@ function showQuestion() {
   startTimer();
 }
 
-function startTimer() {
-    clearInterval(timerInterval);
-    timeleft = 10;
-    hasAnswered = false;
-    answerCount = 0;
-    isShowingResults = false;
-    document.getElementById("time-left").innerText = timeleft;
-    
-    // Reset all buttons to normal state
-    const buttons = optionsElement.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.disabled = false;
-        button.classList.remove('correct', 'wrong', 'selected');
-        // Remove percentage display
-        const originalText = button.innerText.split(" (")[0];
-        button.innerText = originalText;
-    });
-
-    timerInterval = setInterval(() => {
-        timeleft--;
-        document.getElementById("time-left").innerText = timeleft;
-        if (timeleft === 0) {
-            clearInterval(timerInterval);
-            showResults();
-        }
-    }, 1000);
-}
-
-function showResults() {
-    if (isShowingResults) return;
-    isShowingResults = true;
-
-    const correctIndex = questions[currentQuestionIndex].answer;
-    const buttons = optionsElement.querySelectorAll('button');
-    
-    // Show correct answer
-    buttons[correctIndex].classList.add('correct');
-    
-    // Show wrong answer if user selected one
-    if (hasAnswered) {
-        buttons.forEach((button, index) => {
-            if (index !== correctIndex && button.classList.contains('selected')) {
-                button.classList.add('wrong');
-            }
-        });
-
-        // Update score if answer was correct
-        if (buttons[correctIndex].classList.contains('selected')) {
-            score++;
-            const username = localStorage.getItem("username") || "Guest";
-            sendLiveScore(username, score);
-        }
-    }
-
-    // Update percentages
-    fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
-        .then(res => res.json())
-        .then(data => {
-            buttons.forEach((button, idx) => {
-                const originalText = button.innerText.split(" (")[0];
-                button.innerText = `${originalText} (${data[idx]}%)`;
-                
-                const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-                if (fill) fill.style.width = `${data[idx]}%`;
-            });
-        });
-
-    // Update leaderboard
-    fetchLiveScores();
-    
-    // Show next button
-    nextButton.classList.remove('hide');
-}
-
 function selectAnswer(index) {
-    if (hasAnswered || isShowingResults) return;
-    
     const username = localStorage.getItem("username") || "Guest";
-    hasAnswered = true;
-    
-    const buttons = optionsElement.querySelectorAll('button');
-    buttons.forEach(button => button.disabled = true);
-    buttons[index].classList.add('selected');
-
-    // Send answer to server
-    fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            question_id: currentQuestionIndex,
-            option_index: index
-        })
-    })
-    .then(() => {
-        // Increment answer count
-        answerCount++;
-        
-        // If all users have answered, wait for timer to finish
-        if (answerCount >= totalUsers) {
-            console.log("All users have answered, waiting for timer...");
-        }
-    });
+    if(nextButton.classList.contains("hide")=== false) return;
+  clearInterval(timerInterval);
+  const correctIndex = questions[currentQuestionIndex].answer;
+  if (index === correctIndex) {
+      score++;
+      optionsElement.children[index].classList.add("correct");
+    sendLiveScore(username, score)
+  } else {
+      optionsElement.children[index].classList.add("wrong");
+      optionsElement.children[correctIndex].classList.add("correct");
+  }
+  disableOptions();
 }
 
 function disableOptions() {
@@ -183,7 +92,6 @@ function disableOptions() {
         button.disabled = true;
   });
 }
-
 nextButton.addEventListener("click", () => {
     nextButton.classList.add('swipe-right');
     setTimeout(() => {
@@ -199,33 +107,28 @@ nextButton.addEventListener("click", () => {
 });
 
 function endQuiz() {
-    questionElement.innerText = "Quiz Completed!";
-    optionsElement.innerHTML = "";
-    nextButton.classList.add("hide");
-    scoreElement.classList.remove("hide");
-    scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
+  questionElement.innerText = "Quiz Completed!";
+  optionsElement.innerHTML = "";
+  nextButton.classList.add("hide");
+  scoreElement.classList.remove("hide");
+  scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
 
-    // Save score to global leaderboard
-    const username = localStorage.getItem("username") || "Guest";
-    fetch('https://flask-backend-9bjs.onrender.com/leaderboard', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: username,
-            score: score
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        console.log("Score saved to global leaderboard:", data);
-        // Redirect to leaderboard page
-        window.location.href = "leaderboard.html";
-    })
-    .catch(err => {
-        console.error("Failed to save score:", err);
-    });
+  // Auto submit the score
+  saveToBackend();
+
+  // Add leaderboard button (still optional)
+  const leaderboardBtn = document.createElement("button");
+  leaderboardBtn.innerText = "View Leaderboard";
+  leaderboardBtn.classList.add("btn");
+  leaderboardBtn.addEventListener("click", () => {
+      window.location.href = "leaderboard.html";
+  });
+  quizContainer.appendChild(leaderboardBtn);
+
+  const timerElement = document.getElementById("timer");
+  if (timerElement) {
+      timerElement.style.display = "none";
+  }
 }
 
 function saveToBackend() {
@@ -252,6 +155,19 @@ function saveToBackend() {
 }
 
 let timeleft = 10;
+function startTimer() {
+  clearInterval(timerInterval);
+  timeleft = 10;
+  document.getElementById("time-left").innerText = timeleft;
+  timerInterval = setInterval(() => {
+      timeleft--;
+      document.getElementById("time-left").innerText = timeleft;
+      if (timeleft === 0) {
+          clearInterval(timerInterval);
+          nextButton.click();
+      }
+  }, 1000);
+}
 
 function fetchLiveScores() {
     fetch('https://flask-backend-9bjs.onrender.com/live-scores')
@@ -285,167 +201,17 @@ function fetchLiveScores() {
     })
     .catch(err => console.error('Error updating live score:', err));
 }
-
 const socket = io("https://flask-backend-9bjs.onrender.com", {
-    transports: ['websocket', 'polling'],
-    withCredentials: true
-});
-
-// Add connection status logging
-socket.on('connect', () => {
-    console.log('Connected to server');
-    // Join the quiz room when connected
-    socket.emit('join', { username: username, room: 'quiz_room' });
-});
-
-socket.on('disconnect', () => {
-    console.log('Disconnected from server');
-});
-
-socket.on('connect_error', (error) => {
-    console.error('Connection error:', error);
-});
-
-socket.on('quiz_started', (data) => {
-    console.log('Quiz started:', data);
-    currentQuestionIndex = 0;
-    score = 0;
-    showQuestion();
-});
-
+        transports: ['websocket', 'polling'],
+        withCredentials: true
+    });  
 socket.on('question_update', (data) => {
-    console.log("Received new question:", data);
-    if (data && data.questionData) {
-        currentQuestionIndex = data.questionId;
-        const questionData = data.questionData;
-        
-        // Update question text
-        questionElement.innerText = questionData.question;
-        optionsElement.innerHTML = "";
-        
-        // Create options
-        questionData.options.forEach((option, index) => {
-            const buttonWrapper = document.createElement("div");
-            buttonWrapper.classList.add("btn-container");
-
-            const button = document.createElement("button");
-            button.innerText = option;
-            button.classList.add("btn");
-            button.addEventListener("click", () => {
-                selectAnswer(index);
-                fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        question_id: currentQuestionIndex,
-                        option_index: index
-                    })
-                });
-            });
-
-            const progressBar = document.createElement("div");
-            progressBar.classList.add("progress-bar-container");
-            progressBar.id = `progress-${index}`;
-            progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
-
-            buttonWrapper.appendChild(button);
-            buttonWrapper.appendChild(progressBar);
-            optionsElement.appendChild(buttonWrapper);
-        });
-
-        nextButton.classList.add("hide");
-        scoreElement.innerText = `Score: ${score}`;
-        startTimer();
-    } else {
-        console.error("Invalid question data received:", data);
-    }
-});
-
-socket.on('user_count', (data) => {
-    totalUsers = data.count;
-    console.log(`Total users in room: ${totalUsers}`);
+  console.log("Got new question", data);
+  showQuestion(data.questionData); 
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
-    localStorage.setItem("username", username);
-    
-    // Initialize socket connection
-    const socket = io("https://flask-backend-9bjs.onrender.com", {
-        transports: ['websocket', 'polling'],
-        withCredentials: true
-    });
-
-    // Add connection status logging
-    socket.on('connect', () => {
-        console.log('Connected to server');
-        // Join the quiz room when connected
-        socket.emit('join', { username: username, room: 'quiz_room' });
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Disconnected from server');
-    });
-
-    socket.on('connect_error', (error) => {
-        console.error('Connection error:', error);
-    });
-
-    socket.on('quiz_started', (data) => {
-        console.log('Quiz started:', data);
-        currentQuestionIndex = 0;
-        score = 0;
-        showQuestion();
-    });
-
-    socket.on('question_update', (data) => {
-        console.log("Received new question:", data);
-        if (data && data.questionData) {
-            currentQuestionIndex = data.questionId;
-            const questionData = data.questionData;
-            
-            // Update question text
-            questionElement.innerText = questionData.question;
-            optionsElement.innerHTML = "";
-            
-            // Create options
-            questionData.options.forEach((option, index) => {
-                const buttonWrapper = document.createElement("div");
-                buttonWrapper.classList.add("btn-container");
-
-                const button = document.createElement("button");
-                button.innerText = option;
-                button.classList.add("btn");
-                button.addEventListener("click", () => {
-                    selectAnswer(index);
-                    fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            question_id: currentQuestionIndex,
-                            option_index: index
-                        })
-                    });
-                });
-
-                const progressBar = document.createElement("div");
-                progressBar.classList.add("progress-bar-container");
-                progressBar.id = `progress-${index}`;
-                progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
-
-                buttonWrapper.appendChild(button);
-                buttonWrapper.appendChild(progressBar);
-                optionsElement.appendChild(buttonWrapper);
-            });
-
-            nextButton.classList.add("hide");
-            scoreElement.innerText = `Score: ${score}`;
-            startTimer();
-        } else {
-            console.error("Invalid question data received:", data);
-        }
-    });
-
-    // Initial quiz setup
-    startQuiz();
+  const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
+  localStorage.setItem("username", username);
+  startQuiz();
 });
