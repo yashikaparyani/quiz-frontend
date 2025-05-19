@@ -1,6 +1,9 @@
 let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
+let hasAnswered = false;
+let answerCount = 0;
+let totalUsers = 0;
 
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
@@ -69,20 +72,92 @@ function showQuestion() {
   startTimer();
 }
 
+function startTimer() {
+    clearInterval(timerInterval);
+    timeleft = 10;
+    hasAnswered = false;
+    answerCount = 0;
+    document.getElementById("time-left").innerText = timeleft;
+    
+    // Reset all buttons to normal state
+    const buttons = optionsElement.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.disabled = false;
+        button.classList.remove('correct', 'wrong');
+    });
+
+    timerInterval = setInterval(() => {
+        timeleft--;
+        document.getElementById("time-left").innerText = timeleft;
+        if (timeleft === 0) {
+            clearInterval(timerInterval);
+            showResults();
+        }
+    }, 1000);
+}
+
+function showResults() {
+    const correctIndex = questions[currentQuestionIndex].answer;
+    const buttons = optionsElement.querySelectorAll('button');
+    
+    // Show correct answer
+    buttons[correctIndex].classList.add('correct');
+    
+    // Show wrong answer if user selected one
+    if (hasAnswered) {
+        buttons.forEach((button, index) => {
+            if (index !== correctIndex && button.classList.contains('selected')) {
+                button.classList.add('wrong');
+            }
+        });
+    }
+
+    // Update percentages
+    fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
+        .then(res => res.json())
+        .then(data => {
+            buttons.forEach((button, idx) => {
+                const originalText = button.innerText.split(" (")[0];
+                button.innerText = `${originalText} (${data[idx]}%)`;
+                
+                const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+                if (fill) fill.style.width = `${data[idx]}%`;
+            });
+        });
+
+    // Update leaderboard
+    fetchLiveScores();
+}
+
 function selectAnswer(index) {
+    if (hasAnswered) return;
+    
     const username = localStorage.getItem("username") || "Guest";
-    if(nextButton.classList.contains("hide")=== false) return;
-  clearInterval(timerInterval);
-  const correctIndex = questions[currentQuestionIndex].answer;
-  if (index === correctIndex) {
-      score++;
-      optionsElement.children[index].classList.add("correct");
-    sendLiveScore(username, score)
-  } else {
-      optionsElement.children[index].classList.add("wrong");
-      optionsElement.children[correctIndex].classList.add("correct");
-  }
-  disableOptions();
+    hasAnswered = true;
+    
+    const buttons = optionsElement.querySelectorAll('button');
+    buttons.forEach(button => button.disabled = true);
+    buttons[index].classList.add('selected');
+
+    // Send answer to server
+    fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            question_id: currentQuestionIndex,
+            option_index: index
+        })
+    })
+    .then(() => {
+        // Increment answer count
+        answerCount++;
+        
+        // If all users have answered, show results immediately
+        if (answerCount >= totalUsers) {
+            clearInterval(timerInterval);
+            showResults();
+        }
+    });
 }
 
 function disableOptions() {
@@ -154,19 +229,6 @@ function saveToBackend() {
 }
 
 let timeleft = 10;
-function startTimer() {
-  clearInterval(timerInterval);
-  timeleft = 10;
-  document.getElementById("time-left").innerText = timeleft;
-  timerInterval = setInterval(() => {
-      timeleft--;
-      document.getElementById("time-left").innerText = timeleft;
-      if (timeleft === 0) {
-          clearInterval(timerInterval);
-          nextButton.click();
-      }
-  }, 1000);
-}
 
 function fetchLiveScores() {
     fetch('https://flask-backend-9bjs.onrender.com/live-scores')
@@ -273,6 +335,11 @@ socket.on('question_update', (data) => {
     } else {
         console.error("Invalid question data received:", data);
     }
+});
+
+socket.on('user_count', (data) => {
+    totalUsers = data.count;
+    console.log(`Total users in room: ${totalUsers}`);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
