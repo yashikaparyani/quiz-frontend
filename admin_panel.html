@@ -94,10 +94,14 @@
                 if (response && response.success) {
                     currentQuestionIndex++;
                     document.getElementById('status').textContent = `Question ${currentQuestionIndex} of ${window.questions.length}`;
+                } else {
+                    console.error('Failed to send question:', response);
+                    alert('Failed to send question. Please try again.');
                 }
             });
         } else {
             alert('No more questions!');
+            document.getElementById('status').textContent = 'Quiz completed!';
         }
     });
   </script>

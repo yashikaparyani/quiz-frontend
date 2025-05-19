@@ -1,4 +1,3 @@
-
 let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
@@ -207,8 +206,64 @@ const socket = io("https://flask-backend-9bjs.onrender.com", {
     });  
 socket.on('question_update', (data) => {
   console.log("Got new question", data);
-  showQuestion(data.questionData); 
+  if (data && data.questionData) {
+    currentQuestionIndex = data.questionId;
+    const questionData = data.questionData;
+    questionElement.innerText = questionData.question;
+    optionsElement.innerHTML = "";
+
+    questionData.options.forEach((option, index) => {
+      const buttonWrapper = document.createElement("div");
+      buttonWrapper.classList.add("btn-container");
+
+      const button = document.createElement("button");
+      button.innerText = option;
+      button.classList.add("btn");
+      button.addEventListener("click", () => {
+        selectAnswer(index);
+        fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question_id: currentQuestionIndex,
+            option_index: index
+          })
+        })
+        .then(() => {
+          fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
+            .then(res => res.json())
+            .then(data => {
+              const buttons = optionsElement.querySelectorAll('button');
+              data.forEach((percent, idx) => {
+                const originalText = buttons[idx].innerText.split(" (")[0];
+                buttons[idx].innerText = `${originalText} (${percent}%)`;
+
+                const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+                if (fill) fill.style.width = `${percent}%`;
+              });
+            });
+        });
+      });
+
+      const progressBar = document.createElement("div");
+      progressBar.classList.add("progress-bar-container");
+      progressBar.id = `progress-${index}`;
+      progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
+
+      buttonWrapper.appendChild(button);
+      buttonWrapper.appendChild(progressBar);
+      optionsElement.appendChild(buttonWrapper);
+    });
+
+    nextButton.classList.add("hide");
+    scoreElement.innerText = `Score: ${score}`;
+    startTimer();
+  } else {
+    console.error("Invalid question data received:", data);
+  }
 });
+const username = localStorage.getItem("username") || "Guest";
+socket.emit('join', { username: username, room: 'quiz_room' });
 
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
