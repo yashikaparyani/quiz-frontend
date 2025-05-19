@@ -47,7 +47,7 @@
                 if (data.success) {
                     messageDiv.style.color='green';
                     messageDiv.textContent='signup successful!'
-                    localStorage.setItem("username", document.getElementById('username').value.trim());
+                    localStorage.setItem("username", name);
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 1500);
