@@ -61,7 +61,7 @@ function selectAnswer(index) {
   // Remove any previous selections
   const buttons = optionsElement.querySelectorAll('button');
   buttons.forEach(btn => {
-    btn.classList.remove("selected");
+    btn.classList.remove("selected", "wrong", "correct");
   });
   
   // Add selected class to current selection
@@ -73,7 +73,6 @@ function selectAnswer(index) {
     // Add 1 mark only for correct answer
     score++;
     console.log("Correct answer! Score:", score);
-    // Don't send live score yet, wait for timer to end
   } else {
     console.log("Wrong answer. Score remains:", score);
   }
@@ -101,12 +100,13 @@ function startTimer() {
       const correctIndex = questions[currentQuestionIndex].answer;
       const buttons = optionsElement.querySelectorAll('button');
       
-      // Remove selected class and add correct/wrong classes
+      // First show correct answer in green
+      buttons[correctIndex].classList.add("correct");
+      
+      // Then show wrong answer in red if user selected wrong
       buttons.forEach((btn, idx) => {
-        btn.classList.remove("selected");
-        if (idx === correctIndex) {
-          btn.classList.add("correct");
-        } else if (btn.classList.contains("selected")) {
+        if (idx !== correctIndex && btn.classList.contains("selected")) {
+          btn.classList.remove("selected");
           btn.classList.add("wrong");
           btn.style.animation = "shake 0.5s";
         }
