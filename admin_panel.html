@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Panel</title>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.socket.io/4.5.1/socket.io.min.js" integrity="sha384-XHnvV9xA7iCdovrXxU8+qPmT1vYr6XVp39IYh+GBO3FJ7wU8+ZtQHzXZL3JRIFN5" crossorigin="anonymous"></script>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     button { font-size: 1.2em; padding: 10px 20px; }
@@ -13,7 +13,6 @@
   <h1>Admin Panel</h1>
   <button id="startQuizBtn">Start Quiz</button>
   <button id="nextQuestionBtn">Next Question</button>
-<script src="/socket.io/socket.io.js"></script>
 <script src="script2.js"></script>
   <script>
     const socket = io('https://flask-backend-9bjs.onrender.com');
