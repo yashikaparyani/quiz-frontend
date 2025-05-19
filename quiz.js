@@ -4,6 +4,7 @@ let timerInterval;
 let hasAnswered = false;
 let answerCount = 0;
 let totalUsers = 0;
+let isShowingResults = false;
 
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
@@ -77,13 +78,17 @@ function startTimer() {
     timeleft = 10;
     hasAnswered = false;
     answerCount = 0;
+    isShowingResults = false;
     document.getElementById("time-left").innerText = timeleft;
     
     // Reset all buttons to normal state
     const buttons = optionsElement.querySelectorAll('button');
     buttons.forEach(button => {
         button.disabled = false;
-        button.classList.remove('correct', 'wrong');
+        button.classList.remove('correct', 'wrong', 'selected');
+        // Remove percentage display
+        const originalText = button.innerText.split(" (")[0];
+        button.innerText = originalText;
     });
 
     timerInterval = setInterval(() => {
@@ -97,6 +102,9 @@ function startTimer() {
 }
 
 function showResults() {
+    if (isShowingResults) return;
+    isShowingResults = true;
+
     const correctIndex = questions[currentQuestionIndex].answer;
     const buttons = optionsElement.querySelectorAll('button');
     
@@ -110,6 +118,13 @@ function showResults() {
                 button.classList.add('wrong');
             }
         });
+
+        // Update score if answer was correct
+        if (buttons[correctIndex].classList.contains('selected')) {
+            score++;
+            const username = localStorage.getItem("username") || "Guest";
+            sendLiveScore(username, score);
+        }
     }
 
     // Update percentages
@@ -127,10 +142,13 @@ function showResults() {
 
     // Update leaderboard
     fetchLiveScores();
+    
+    // Show next button
+    nextButton.classList.remove('hide');
 }
 
 function selectAnswer(index) {
-    if (hasAnswered) return;
+    if (hasAnswered || isShowingResults) return;
     
     const username = localStorage.getItem("username") || "Guest";
     hasAnswered = true;
@@ -152,10 +170,9 @@ function selectAnswer(index) {
         // Increment answer count
         answerCount++;
         
-        // If all users have answered, show results immediately
+        // If all users have answered, wait for timer to finish
         if (answerCount >= totalUsers) {
-            clearInterval(timerInterval);
-            showResults();
+            console.log("All users have answered, waiting for timer...");
         }
     });
 }
@@ -181,28 +198,33 @@ nextButton.addEventListener("click", () => {
 });
 
 function endQuiz() {
-  questionElement.innerText = "Quiz Completed!";
-  optionsElement.innerHTML = "";
-  nextButton.classList.add("hide");
-  scoreElement.classList.remove("hide");
-  scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
+    questionElement.innerText = "Quiz Completed!";
+    optionsElement.innerHTML = "";
+    nextButton.classList.add("hide");
+    scoreElement.classList.remove("hide");
+    scoreElement.innerText = `Final Score: ${score} / ${questions.length}`;
 
-  // Auto submit the score
-  saveToBackend();
-
-  // Add leaderboard button (still optional)
-  const leaderboardBtn = document.createElement("button");
-  leaderboardBtn.innerText = "View Leaderboard";
-  leaderboardBtn.classList.add("btn");
-  leaderboardBtn.addEventListener("click", () => {
-      window.location.href = "leaderboard.html";
-  });
-  quizContainer.appendChild(leaderboardBtn);
-
-  const timerElement = document.getElementById("timer");
-  if (timerElement) {
-      timerElement.style.display = "none";
-  }
+    // Save score to global leaderboard
+    const username = localStorage.getItem("username") || "Guest";
+    fetch('https://flask-backend-9bjs.onrender.com/leaderboard', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: username,
+            score: score
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Score saved to global leaderboard:", data);
+        // Redirect to leaderboard page
+        window.location.href = "leaderboard.html";
+    })
+    .catch(err => {
+        console.error("Failed to save score:", err);
+    });
 }
 
 function saveToBackend() {
