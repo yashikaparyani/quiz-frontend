@@ -21,26 +21,37 @@
         transports: ['websocket', 'polling'],
         withCredentials: true
     });
+
+    // Add connection status logging
+    socket.on('connect', () => {
+        console.log('Connected to server');
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Disconnected from server');
+    });
+
+    socket.on('connect_error', (error) => {
+        console.error('Connection error:', error);
+    });
+
     let currentQuestionIndex = 0;
     socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
+    
     document.getElementById('startQuizBtn').addEventListener('click', () => {
-      
-      socket.emit('start_quiz' ,{});
+      console.log('Starting quiz...');
+      socket.emit('start_quiz', {});
       alert('Quiz started! Users will be redirected.');
     });
 
-    // Optionally, send admin login info on connect
-    
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+      console.log('Next button clicked, current index:', currentQuestionIndex);
       if (currentQuestionIndex < window.questions.length) {
         const questionData = window.questions[currentQuestionIndex];
+        console.log('Sending question:', questionData);
         socket.emit('next_question', {
             questionId: currentQuestionIndex,
-            questionData: {
-                question: questionData.question,
-                options: questionData.options,
-                answer: questionData.answer
-            }
+            questionData: questionData
         });
         currentQuestionIndex++;
       } else {

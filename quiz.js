@@ -1,4 +1,3 @@
-
 let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
@@ -202,12 +201,76 @@ function fetchLiveScores() {
     .catch(err => console.error('Error updating live score:', err));
 }
 const socket = io("https://flask-backend-9bjs.onrender.com", {
-        transports: ['websocket', 'polling'],
-        withCredentials: true
-    });  
+    transports: ['websocket', 'polling'],
+    withCredentials: true
+});
+
+// Add connection status logging
+socket.on('connect', () => {
+    console.log('Connected to server');
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+});
+
+socket.on('connect_error', (error) => {
+    console.error('Connection error:', error);
+});
+
+socket.on('quiz_started', (data) => {
+    console.log('Quiz started:', data);
+    currentQuestionIndex = 0;
+    score = 0;
+    showQuestion();
+});
+
 socket.on('question_update', (data) => {
-  console.log("Got new question", data);
-  showQuestion(data.questionData); 
+    console.log("Received new question:", data);
+    if (data && data.questionData) {
+        currentQuestionIndex = data.questionId;
+        const questionData = data.questionData;
+        
+        // Update question text
+        questionElement.innerText = questionData.question;
+        optionsElement.innerHTML = "";
+        
+        // Create options
+        questionData.options.forEach((option, index) => {
+            const buttonWrapper = document.createElement("div");
+            buttonWrapper.classList.add("btn-container");
+
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("btn");
+            button.addEventListener("click", () => {
+                selectAnswer(index);
+                fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question_id: currentQuestionIndex,
+                        option_index: index
+                    })
+                });
+            });
+
+            const progressBar = document.createElement("div");
+            progressBar.classList.add("progress-bar-container");
+            progressBar.id = `progress-${index}`;
+            progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
+
+            buttonWrapper.appendChild(button);
+            buttonWrapper.appendChild(progressBar);
+            optionsElement.appendChild(buttonWrapper);
+        });
+
+        nextButton.classList.add("hide");
+        scoreElement.innerText = `Score: ${score}`;
+        startTimer();
+    } else {
+        console.error("Invalid question data received:", data);
+    }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
