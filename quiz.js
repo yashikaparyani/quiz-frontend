@@ -258,8 +258,8 @@ const socket = io("https://flask-backend-9bjs.onrender.com", {
         withCredentials: true
     });  
 socket.on('question_update', (data) => {
-  currentQuestionIndex = data.index;
-  showQuestion(); // or however you load questions
+  console.log("Got new question", data);
+  showQuestion(data.questionData); 
 });
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -30,7 +30,10 @@
     socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
     let CURRENT_INDEX = 0;
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
-      socket.emit('next_question', { index: CURRENT_INDEX });
+    socket.emit('next_question', {
+        questionId: currentQuestionIndex,
+        questionData: questions[currentQuestionIndex]
+    });
 });
   </script>
 </body>
