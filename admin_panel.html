@@ -13,6 +13,8 @@
   <h1>Admin Panel</h1>
   <button id="startQuizBtn">Start Quiz</button>
   <button id="nextQuestionBtn">Next Question</button>
+  <div id="status"></div>
+
   <script src="quiz_data.js"></script>
   <script src="script2.js"></script>
 
@@ -25,47 +27,71 @@
     // Add connection status logging
     socket.on('connect', () => {
         console.log('Admin panel connected to server');
+        document.getElementById('status').textContent = 'Connected to server';
     });
 
     socket.on('disconnect', () => {
         console.log('Admin panel disconnected from server');
+        document.getElementById('status').textContent = 'Disconnected from server';
     });
 
     let currentQuestionIndex = 0;
+    let questionsLoaded = false;
+
+    // Check if questions are loaded
+    function checkQuestionsLoaded() {
+        if (window.questions && window.questions.length > 0) {
+            questionsLoaded = true;
+            document.getElementById('status').textContent = `Questions loaded: ${window.questions.length} questions available`;
+            console.log('Questions loaded:', window.questions);
+        } else {
+            questionsLoaded = false;
+            document.getElementById('status').textContent = 'Waiting for questions to load...';
+            setTimeout(checkQuestionsLoaded, 1000); // Check again after 1 second
+        }
+    }
+
+    // Start checking for questions
+    checkQuestionsLoaded();
+
     socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
     
     document.getElementById('startQuizBtn').addEventListener('click', () => {
-      console.log('Start quiz button clicked');
-      socket.emit('start_quiz' ,{});
-      alert('Quiz started! Users will be redirected.');
+        if (!questionsLoaded) {
+            alert('Please wait for questions to load!');
+            return;
+        }
+        console.log('Start quiz button clicked');
+        socket.emit('start_quiz', {});
+        alert('Quiz started! Users will be redirected.');
     });
 
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
-      console.log('Next button clicked, current index:', currentQuestionIndex);
-      console.log('Total questions:', window.questions ? window.questions.length : 'undefined');
-      
-      if (!window.questions) {
-        console.error('Questions array is not defined!');
-        alert('Error: Questions not loaded!');
-        return;
-      }
+        if (!questionsLoaded) {
+            alert('Please wait for questions to load!');
+            return;
+        }
 
-      if (currentQuestionIndex < window.questions.length) {
-        const questionData = window.questions[currentQuestionIndex];
-        console.log('Sending question data:', questionData);
+        console.log('Next button clicked, current index:', currentQuestionIndex);
+        console.log('Total questions:', window.questions.length);
         
-        socket.emit('next_question', {
-            questionId: currentQuestionIndex,
-            questionData: questionData
-        }, (response) => {
-            console.log('Server response:', response);
-        });
-        
-        currentQuestionIndex++;
-        console.log('Updated currentQuestionIndex to:', currentQuestionIndex);
-      } else {
-        alert('No more questions!');
-      }
+        if (currentQuestionIndex < window.questions.length) {
+            const questionData = window.questions[currentQuestionIndex];
+            console.log('Sending question data:', questionData);
+            
+            socket.emit('next_question', {
+                questionId: currentQuestionIndex,
+                questionData: questionData
+            }, (response) => {
+                console.log('Server response:', response);
+                if (response && response.success) {
+                    currentQuestionIndex++;
+                    document.getElementById('status').textContent = `Question ${currentQuestionIndex} of ${window.questions.length}`;
+                }
+            });
+        } else {
+            alert('No more questions!');
+        }
     });
   </script>
 </body>
