@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    
-
     const response = await fetch(
       "https://flask-backend-9bjs.onrender.com/login",
       {
@@ -28,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const result = await response.json();
     const message = document.getElementById("message");
 
-    
     if (result.success === true) {
       message.style.color = "green";
       message.textContent = "Login successful! Redirecting...";
@@ -36,14 +33,14 @@ document.addEventListener("DOMContentLoaded", function () {
       // Store user info if needed
       localStorage.setItem("user", JSON.stringify(result));
       localStorage.setItem("username", result.username);
-      localStorage.setItem('role', result.role)
+      localStorage.setItem("role", result.role);
 
-      if(result.role === 'admin'){
-        window.location.href = 'admin_panel.html';
+      if (result.role === "admin") {
+        window.location.href = "admin_panel.html";
       } else {
-        window.location.href = 'welcome.html';
+        window.location.href = "welcome.html";
       }
-    }else{
+    } else {
       message.style.color = "red";
       message.textContent = result.message;
     }
