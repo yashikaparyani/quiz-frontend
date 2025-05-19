@@ -1,8 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {                                           
   const form = document.getElementById("login-form");
-
+  if (!form ) return;
   form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+    e.preventDefault();                                                
 
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("password").value;
