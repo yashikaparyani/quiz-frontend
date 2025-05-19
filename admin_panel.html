@@ -20,23 +20,25 @@
         transports: ['websocket', 'polling'],
         withCredentials: true
     });
-
+    let currentQuestionIndex = 0;
+    socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
     document.getElementById('startQuizBtn').addEventListener('click', () => {
-      // Notify backend/admin server to start quiz for all users
+      
       socket.emit('start_quiz' ,{});
       alert('Quiz started! Users will be redirected.');
     });
 
     // Optionally, send admin login info on connect
-    socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
+    
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
-    let currentQuestionIndex = 0;
-    socket.emit('next_question', {
-        questionId: currentQuestionIndex,
-        questionData: questions[currentQuestionIndex]
+      if (currentQuestionIndex < window.questions.length) {
+        socket.emit('next_question', {
+            questionId: currentQuestionIndex,
+            questionData: window.questions[currentQuestionIndex]
+        });
+        currentQuestionIndex++;
+      } 
     });
-    currentQuestionIndex++;
-});
   </script>
 </body>
 </html>
