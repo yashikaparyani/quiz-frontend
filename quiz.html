@@ -65,15 +65,17 @@
         .btn.selected {
             background-color: #2196F3 !important;
             color: white !important;
-            border: 2px solid #1976D2;
-            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+            border: 2px solid #1976D2 !important;
+            box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3) !important;
         }
 
         .btn.correct {
             background-color: #4CAF50 !important;
             color: white !important;
-            border: 2px solid #388E3C;
-            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+            border: 2px solid #388E3C !important;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3) !important;
+            opacity: 1 !important;
+            pointer-events: none !important;
         }
 
         @keyframes shake {
@@ -83,10 +85,12 @@
         }
 
         .btn.wrong {
-            background-color: #f44336 !important;
+            background-color: #ff0000 !important;  /* Brighter red */
             color: white !important;
-            border: 2px solid #d32f2f;
-            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3);
+            border: 2px solid #cc0000 !important;
+            box-shadow: 0 2px 4px rgba(255, 0, 0, 0.3) !important;
+            opacity: 1 !important;
+            pointer-events: none !important;
         }
 
         .leaderboard-btn {

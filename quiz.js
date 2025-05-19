@@ -237,6 +237,18 @@ socket.on('question_update', (data) => {
     // Only update if it's a new question
     if (data.questionId !== currentQuestionIndex) {
       currentQuestionIndex = data.questionId;
+      
+      // Check if this is the last question
+      if (currentQuestionIndex >= questions.length - 1) {
+        // Wait for timer to end before showing leaderboard button
+        const checkTimer = setInterval(() => {
+          if (timeleft === 0) {
+            clearInterval(checkTimer);
+            endQuiz();  // Show leaderboard button
+          }
+        }, 1000);
+      }
+
       const questionData = data.questionData;
       questionElement.innerText = questionData.question;
       optionsElement.innerHTML = "";
