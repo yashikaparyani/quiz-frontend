@@ -18,7 +18,7 @@ function startQuiz() {
 }
 
 function showQuestion() {
-  const questionData = window.questions[currentQuestionIndex];
+  const questionData = questions[currentQuestionIndex];
   questionElement.innerText = questionData.question;
   optionsElement.innerHTML = "";
 
@@ -74,7 +74,7 @@ function selectAnswer(index) {
     const username = localStorage.getItem("username") || "Guest";
     if(nextButton.classList.contains("hide")=== false) return;
   clearInterval(timerInterval);
-  const correctIndex = window.questions[currentQuestionIndex].answer;
+  const correctIndex = questions[currentQuestionIndex].answer;
   if (index === correctIndex) {
       score++;
       optionsElement.children[index].classList.add("correct");
