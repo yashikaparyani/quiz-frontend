@@ -15,7 +15,10 @@
   <button id="nextQuestionBtn">Next Question</button>
 <script src="script2.js"></script>
   <script>
-    const socket = io('https://flask-backend-9bjs.onrender.com');
+    const socket = io("https://flask-backend-9bjs.onrender.com", {
+        transports: ['websocket', 'polling'],
+        withCredentials: true
+    });
 
     document.getElementById('startQuizBtn').addEventListener('click', () => {
       // Notify backend/admin server to start quiz for all users

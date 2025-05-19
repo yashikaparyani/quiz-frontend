@@ -12,7 +12,10 @@
 <body>
   <div id="welcomeMsg">Welcome to the Quiz! Waiting for the admin to start...</div>
   <script>
-    const socket = io('https://flask-backend-9bjs.onrender.com');
+    const socket = io("https://flask-backend-9bjs.onrender.com", {
+        transports: ['websocket', 'polling'],
+        withCredentials: true
+    });
 
     // Receive start-quiz event from admin
     socket.on('quiz_started', () => {
