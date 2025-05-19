@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("login-form");
 
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("password").value;
 
@@ -11,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
 
-    const response = fetch(
+    const response = await fetch(
       "https://flask-backend-9bjs.onrender.com/login",
       {
         method: "POST",
@@ -22,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     );
 
-    const result =  response.json();
+    const result = await response.json();
     const message = document.getElementById("message");
 
     
@@ -45,3 +48,4 @@ document.addEventListener("DOMContentLoaded", function () {
       message.textContent = result.message;
     }
   });
+});
