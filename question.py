@@ -1,4 +1,4 @@
-let questions = [
+questions = [
   {
       question: "What will console.log(2 + '2') output in JavaScript?",
       options: ["4", "22", "NaN", "Error"],

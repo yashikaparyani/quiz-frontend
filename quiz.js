@@ -16,7 +16,7 @@ function startQuiz() {
   showQuestion();
 }
 
-function showQuestion() {
+function showQuestion(questionData) {
   const questionData = questions[currentQuestionIndex];
   questionElement.innerText = questionData.question;
   optionsElement.innerHTML = "";
