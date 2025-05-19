@@ -216,7 +216,9 @@ socket.on('disconnect', () => {
 
 socket.on('quiz_started', (data) => {
     console.log('Quiz started event received:', data);
-    startQuiz();
+    currentQuestionIndex = 0;  // Reset to first question
+    score = 0;  // Reset score
+    showQuestion();  // Show first question
 });
 
 socket.on('question_update', (data) => {
@@ -224,16 +226,63 @@ socket.on('question_update', (data) => {
     if (data && data.questionData) {
         currentQuestionIndex = data.questionId;
         console.log('Updating to question index:', currentQuestionIndex);
-        // Update the questions array with the new question data
-        questions[currentQuestionIndex] = data.questionData;
-        showQuestion();
+        
+        // Clear previous question
+        questionElement.innerText = data.questionData.question;
+        optionsElement.innerHTML = "";
+        
+        // Display new question and options
+        data.questionData.options.forEach((option, index) => {
+            const buttonWrapper = document.createElement("div");
+            buttonWrapper.classList.add("btn-container");
+
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("btn");
+            button.addEventListener("click", () => {
+                selectAnswer(index);
+                fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question_id: currentQuestionIndex,
+                        option_index: index
+                    })
+                })
+                .then(() => {
+                    fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const buttons = optionsElement.querySelectorAll('button');
+                            data.forEach((percent, idx) => {
+                                const originalText = buttons[idx].innerText.split(" (")[0];
+                                buttons[idx].innerText =` ${originalText} (${percent}%)`;
+
+                                const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+                                if (fill) fill.style.width = `${percent}%`;
+                            });
+                        });
+                });
+            });
+
+            const progressBar = document.createElement("div");
+            progressBar.classList.add("progress-bar-container");
+            progressBar.id = `progress-${index}`;
+            progressBar.innerHTML = `<div class="progress-bar-fill"></div>`;
+
+            buttonWrapper.appendChild(button);
+            buttonWrapper.appendChild(progressBar);
+            optionsElement.appendChild(buttonWrapper);
+        });
+
+        nextButton.classList.add("hide");
+        scoreElement.innerText = `Score: ${score}`;
+        startTimer();
     } else {
         console.error('Invalid question data received:', data);
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const username = localStorage.getItem("name") || prompt("Enter your name") || "Guest";
-  localStorage.setItem("username", username);
-  startQuiz();
-});
+// Add username prompt when page loads
+const username = localStorage.getItem("username") || prompt("Enter your name") || "Guest";
+localStorage.setItem("username", username);
