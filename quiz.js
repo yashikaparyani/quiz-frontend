@@ -183,6 +183,7 @@ function disableOptions() {
         button.disabled = true;
   });
 }
+
 nextButton.addEventListener("click", () => {
     nextButton.classList.add('swipe-right');
     setTimeout(() => {
@@ -284,6 +285,7 @@ function fetchLiveScores() {
     })
     .catch(err => console.error('Error updating live score:', err));
 }
+
 const socket = io("https://flask-backend-9bjs.onrender.com", {
     transports: ['websocket', 'polling'],
     withCredentials: true
