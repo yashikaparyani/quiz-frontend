@@ -31,6 +31,7 @@
     // Optionally, send admin login info on connect
     socket.emit('admin-join', { username: localStorage.getItem('username') || 'Admin' });
     document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+    let currentQuestionIndex = 0;
     socket.emit('next_question', {
         questionId: currentQuestionIndex,
         questionData: questions[currentQuestionIndex]
