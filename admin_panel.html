@@ -79,10 +79,17 @@
             const questionData = window.questions[currentQuestionIndex];
             console.log('Sending question data:', questionData);
             
-            socket.emit('next_question', {
+            // Ensure we're sending the complete question data
+            const questionToSend = {
                 questionId: currentQuestionIndex,
-                questionData: questionData
-            }, (response) => {
+                questionData: {
+                    question: questionData.question,
+                    options: questionData.options,
+                    answer: questionData.answer
+                }
+            };
+            
+            socket.emit('next_question', questionToSend, (response) => {
                 console.log('Server response:', response);
                 if (response && response.success) {
                     currentQuestionIndex++;

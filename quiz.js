@@ -62,7 +62,7 @@ function showQuestion() {
     buttonWrapper.appendChild(button);
     buttonWrapper.appendChild(progressBar);
     optionsElement.appendChild(buttonWrapper);
-});
+  });
 
   nextButton.classList.add("hide");
   scoreElement.innerText = `Score: ${score}`;
@@ -224,6 +224,8 @@ socket.on('question_update', (data) => {
     if (data && data.questionData) {
         currentQuestionIndex = data.questionId;
         console.log('Updating to question index:', currentQuestionIndex);
+        // Update the questions array with the new question data
+        questions[currentQuestionIndex] = data.questionData;
         showQuestion();
     } else {
         console.error('Invalid question data received:', data);
