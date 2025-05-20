@@ -80,12 +80,13 @@ body {
 /* Progress bar under each option */
 .progress-bar-container {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background-color: #ccc;
   border-radius: 4px;
   overflow: hidden;
   margin-top: 6px;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .progress-bar-fill {
@@ -281,8 +282,8 @@ body {
     margin-bottom: 2vw;
   }
   .progress-bar-container {
-    height: 2vw;
-    margin-top: 1vw;
+    height: 6px;
+    min-height: unset;
   }
   #live-leaderboard-section {
     max-width: 95vw;
@@ -299,6 +300,9 @@ body {
   #live-leaderboard li {
     font-size: 3.5vw;
     padding: 1vw 0;
+  }
+  .percentage-text {
+    font-size: 3vw;
   }
 }
 
@@ -341,4 +345,41 @@ body {
 
 html, body {
   overflow-x: hidden;
+}
+
+/* --- Option Selection Blue Color --- */
+.btn.selected,
+.btn:active {
+  background-color: #2196F3 !important;
+  color: #fff !important;
+  border: 2px solid #1976D2 !important;
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3) !important;
+}
+
+/* --- Progress Bar Percentage Display --- */
+.percentage-text {
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .btn.selected,
+  .btn:active {
+    background-color: #2196F3 !important;
+    color: #fff !important;
+    border: 2px solid #1976D2 !important;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3) !important;
+  }
+  .percentage-text {
+    font-size: 3vw;
+  }
 }
