@@ -126,12 +126,21 @@ function startTimer() {
             const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
             if (fill) {
               fill.style.width = `${percent}%`;
+              // Remove any existing percentage text
+              const existingText = fill.querySelector('.percentage-text');
+              if (existingText) {
+                existingText.remove();
+              }
+              // Add new percentage text
               const percentageText = document.createElement('span');
               percentageText.className = 'percentage-text';
-              percentageText.textContent = `${percent}%`;
+              percentageText.textContent = `${Math.round(percent)}%`;
               fill.appendChild(percentageText);
             }
           });
+        })
+        .catch(err => {
+          console.error('Error fetching percentages:', err);
         });
     }
   }, 1000);
