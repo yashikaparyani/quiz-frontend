@@ -141,7 +141,7 @@ function startTimer() {
       const selectedIndex = Array.from(buttons).findIndex(btn => btn.classList.contains("selected"));
       
       // Send the selected option to backend
-      fetch(`${BACKEND_URL}/update-option-stats`, {
+      fetch(`${BACKEND_URL}/submit-option`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -276,7 +276,7 @@ function fetchLiveScores() {
 setInterval(fetchLiveScores, 2000);
 
 function sendLiveScore(name, score) {
-  fetch('https://flask-backend-9bjs.onrender.com/update-live-score', {
+  fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
