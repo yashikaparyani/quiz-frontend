@@ -34,6 +34,7 @@ function showQuestion() {
     button.addEventListener("click", () => {
       if (!hasAnswered) {
         selectAnswer(index);
+        hasAnswered = true;
         // Submit the selected option
         fetch(`${BACKEND_URL}/submit-option`, {
           method: 'POST',
@@ -151,47 +152,49 @@ function startTimer() {
       const selectedIndex = Array.from(buttons).findIndex(btn => btn.classList.contains("selected"));
 
       // Submit the selected option (again, for timer-based stats)
-      fetch(`${BACKEND_URL}/submit-option`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question_id: currentQuestionIndex,
-          option_index: selectedIndex
+      if (selectedIndex !== -1) {
+        fetch(`${BACKEND_URL}/submit-option`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question_id: currentQuestionIndex,
+            option_index: selectedIndex
+          })
         })
-      })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to submit option');
-        return res.json();
-      })
-      .then(() => {
-        // Fetch updated percentages
-        return fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`);
-      })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to get percentages');
-        return res.json();
-      })
-      .then(data => {
-        data.forEach((percent, idx) => {
-          const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-          if (fill) {
-            fill.style.width = `${percent}%`;
-            // Remove any existing percentage text
-            const existingText = fill.querySelector('.percentage-text');
-            if (existingText) {
-              existingText.remove();
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to submit option');
+          return res.json();
+        })
+        .then(() => {
+          // Fetch updated percentages
+          return fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`);
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to get percentages');
+          return res.json();
+        })
+        .then(data => {
+          data.forEach((percent, idx) => {
+            const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+            if (fill) {
+              fill.style.width = `${percent}%`;
+              // Remove any existing percentage text
+              const existingText = fill.querySelector('.percentage-text');
+              if (existingText) {
+                existingText.remove();
+              }
+              // Add new percentage text
+              const percentageText = document.createElement('span');
+              percentageText.className = 'percentage-text';
+              percentageText.textContent = `${Math.round(percent)}%`;
+              fill.appendChild(percentageText);
             }
-            // Add new percentage text
-            const percentageText = document.createElement('span');
-            percentageText.className = 'percentage-text';
-            percentageText.textContent = `${Math.round(percent)}%`;
-            fill.appendChild(percentageText);
-          }
+          });
+        })
+        .catch(err => {
+          console.error('Error updating option statistics:', err);
         });
-      })
-      .catch(err => {
-        console.error('Error updating option statistics:', err);
-      });
+      }
     }
   }, 1000);
 }
@@ -237,7 +240,10 @@ function saveToBackend() {
       total_questions: questions.length
     })
   })
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error('Failed to save score');
+    return res.json();
+  })
   .then(data => {
     console.log("Score saved:", data);
     window.location.href = "leaderboard.html";
@@ -253,8 +259,11 @@ function saveToBackend() {
 let timeleft = 10;
 
 function fetchLiveScores() {
-  fetch('https://flask-backend-9bjs.onrender.com/live-scores')
-    .then(res => res.json())
+  fetch(`${BACKEND_URL}/live-scores`)
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to fetch live scores');
+      return res.json();
+    })
     .then(data => {
       const leaderboard = document.getElementById('live-leaderboard');
       if (!leaderboard) return;
@@ -278,7 +287,10 @@ function sendLiveScore(name, score) {
     },
     body: JSON.stringify({ name: name, score: score })
   })
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error('Failed to update live score');
+    return res.json();
+  })
   .then(data => {
     console.log('Live score sent:', data.message);
   })
