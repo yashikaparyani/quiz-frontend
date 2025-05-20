@@ -9,6 +9,7 @@ body {
   padding: 15px;
   box-sizing: border-box;
   min-height: 100vh;
+  transition: all 0.3s ease;
 }
 
 /* Quiz Container */
@@ -23,6 +24,7 @@ body {
   max-width: 400px;
   box-sizing: border-box;
   margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
 
 /* Timer */
@@ -32,6 +34,7 @@ body {
   color: rgb(243, 21, 21);
   text-align: right;
   margin-bottom: 10px;
+  transition: all 0.3s ease;
 }
 
 /* Answer Buttons */
@@ -49,10 +52,11 @@ body {
   padding: 12px;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
   font-size: 16px;
   text-align: left;
   word-wrap: break-word;
+  width: 100%;
 }
 
 .btn:hover {
@@ -81,6 +85,7 @@ body {
   border-radius: 4px;
   overflow: hidden;
   margin-top: 6px;
+  transition: all 0.3s ease;
 }
 
 .progress-bar-fill {
@@ -100,8 +105,9 @@ body {
   cursor: pointer;
   font-size: 20px;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  transition: transform 0.5s ease;
+  transition: all 0.3s ease;
   margin-top: 10px;
+  width: 100%;
 }
 
 #next-btn.swipe-right {
@@ -119,6 +125,7 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   padding: 16px;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 #live-leaderboard-section h3 {
@@ -129,6 +136,7 @@ body {
   font-weight: 600;
   border-bottom: 2px solid #1e7f34;
   padding-bottom: 6px;
+  transition: all 0.3s ease;
 }
 
 #live-leaderboard {
@@ -137,6 +145,7 @@ body {
   margin: 0;
   max-height: 200px;
   overflow-y: auto;
+  transition: all 0.3s ease;
 }
 
 #live-leaderboard li {
@@ -146,6 +155,7 @@ body {
   border-bottom: 1px solid #e0f2e9;
   font-size: 14px;
   font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 #live-leaderboard li span.name {
@@ -167,21 +177,136 @@ body {
   border-radius: 4px;
 }
 
-/* Tablet & Desktop View */
-@media (min-width: 769px) {
+/* Desktop View (1024px and above) */
+@media (min-width: 1024px) {
   body {
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
+    gap: 30px;
+    padding: 30px;
+  }
+
+  .quiz-container {
+    max-width: 500px;
+    margin-right: 0;
+  }
+
+  #live-leaderboard-section {
+    max-width: 350px;
+    margin-top: 0;
+  }
+}
+
+/* Tablet View */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
   }
 
   .quiz-container {
     max-width: 450px;
-    margin-right: 20px;
+    margin-right: 0;
   }
 
   #live-leaderboard-section {
     max-width: 300px;
     margin-top: 0;
+  }
+
+  .btn {
+    font-size: 15px;
+    padding: 15px;
+  }
+
+  #timer {
+    font-size: 20px;
+  }
+}
+
+/* Mobile View */
+@media (max-width: 767px) {
+  body {
+    padding: 10px;
+  }
+
+  .quiz-container {
+    max-width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  #live-leaderboard-section {
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  #timer {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  #live-leaderboard-section h3 {
+    font-size: 18px;
+  }
+
+  #live-leaderboard li {
+    font-size: 13px;
+    padding: 4px 2px;
+  }
+
+  .progress-bar-container {
+    height: 4px;
+  }
+
+  #next-btn {
+    font-size: 16px;
+    padding: 10px;
+  }
+}
+
+/* Small Mobile View */
+@media (max-width: 360px) {
+  .quiz-container {
+    padding: 10px;
+  }
+
+  .btn {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  #timer {
+    font-size: 14px;
+  }
+
+  #live-leaderboard-section h3 {
+    font-size: 16px;
+  }
+
+  #live-leaderboard li {
+    font-size: 12px;
+  }
+}
+
+/* Smooth size reduction for all elements */
+@media (max-width: 1024px) {
+  .quiz-container,
+  #live-leaderboard-section,
+  .btn,
+  #timer,
+  #live-leaderboard-section h3,
+  #live-leaderboard li {
+    transform-origin: center;
+    transform: scale(calc(0.9 + (100vw - 360px) / (1024 - 360) * 0.1));
   }
 }
