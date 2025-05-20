@@ -22,6 +22,7 @@ function showQuestion() {
   const questionData = questions[currentQuestionIndex];
   questionElement.innerText = questionData.question;
   optionsElement.innerHTML = "";
+  hasAnswered = false;
 
   questionData.options.forEach((option, index) => {
     const buttonWrapper = document.createElement("div");
@@ -31,29 +32,42 @@ function showQuestion() {
     button.innerText = option;
     button.classList.add("btn");
     button.addEventListener("click", () => {
+      if (!hasAnswered) {
         selectAnswer(index);
-        fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                question_id: currentQuestionIndex,
-                option_index: index
-            })
+        // Submit the selected option
+        fetch(`${BACKEND_URL}/submit-option`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question_id: currentQuestionIndex,
+            option_index: index
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to submit option');
+          return res.json();
         })
         .then(() => {
-            fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
-                .then(res => res.json())
-                .then(data => {
-                    const buttons = optionsElement.querySelectorAll('button');
-                    data.forEach((percent, idx) => {
-                        const originalText = buttons[idx].innerText.split(" (")[0];
-                        buttons[idx].innerText =` ${originalText} (${percent}%)`;
-
-                        const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-                        if (fill) fill.style.width = `${percent}%`;
-                    });
-                });
+          // Fetch updated percentages
+          return fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`);
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to get percentages');
+          return res.json();
+        })
+        .then(data => {
+          const buttons = optionsElement.querySelectorAll('button');
+          data.forEach((percent, idx) => {
+            const originalText = buttons[idx].innerText.split(" (")[0];
+            buttons[idx].innerText = `${originalText} (${percent}%)`;
+            const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+            if (fill) fill.style.width = `${percent}%`;
+          });
+        })
+        .catch(err => {
+          console.error('Error updating option statistics:', err);
         });
+      }
     });
 
     const progressBar = document.createElement("div");
@@ -118,11 +132,7 @@ function startTimer() {
       // Show correct answer
       const correctIndex = questions[currentQuestionIndex].answer;
       const buttons = optionsElement.querySelectorAll('button');
-      
-      // First show correct answer in green
       buttons[correctIndex].classList.add("correct");
-      
-      // Then show wrong answer in red if user selected wrong
       buttons.forEach((btn, idx) => {
         if (idx !== correctIndex && btn.classList.contains("selected")) {
           btn.classList.remove("selected");
@@ -136,61 +146,46 @@ function startTimer() {
       if (hasAnswered) {
         sendLiveScore(username, score);
       }
-      
+
       // Get the selected option index
       const selectedIndex = Array.from(buttons).findIndex(btn => btn.classList.contains("selected"));
-      
-      // Send the selected option to backend
+
+      // Submit the selected option (again, for timer-based stats)
       fetch(`${BACKEND_URL}/submit-option`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          questionId: currentQuestionIndex,
-          selectedOption: selectedIndex
+          question_id: currentQuestionIndex,
+          option_index: selectedIndex
         })
       })
-      .then(() => {
-        // After sending the selection, fetch the updated percentages
-        return fetch(`${BACKEND_URL}/get-option-stats/${currentQuestionIndex}`);
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to submit option');
+        return res.json();
       })
-      .then(res => res.json())
+      .then(() => {
+        // Fetch updated percentages
+        return fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`);
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to get percentages');
+        return res.json();
+      })
       .then(data => {
-        console.log('Option statistics:', data);
-        
-        // Calculate total responses
-        const totalResponses = data.reduce((sum, count) => sum + count, 0);
-        
-        // Update progress bars with percentages
-        data.forEach((count, idx) => {
+        data.forEach((percent, idx) => {
           const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
           if (fill) {
-            // Calculate percentage
-            const percentage = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
-            
-            // Force a reflow to ensure animation works
-            fill.style.width = '0%';
-            void fill.offsetWidth;
-            
-            // Set the new width with animation
-            setTimeout(() => {
-              fill.style.width = `${percentage}%`;
-            }, 50);
-            
+            fill.style.width = `${percent}%`;
             // Remove any existing percentage text
             const existingText = fill.querySelector('.percentage-text');
             if (existingText) {
               existingText.remove();
             }
-            
             // Add new percentage text
             const percentageText = document.createElement('span');
             percentageText.className = 'percentage-text';
-            percentageText.textContent = `${Math.round(percentage)}%`;
+            percentageText.textContent = `${Math.round(percent)}%`;
             fill.appendChild(percentageText);
-            
-            console.log(`Option ${idx}: ${Math.round(percentage)}% (${count} users)`);
           }
         });
       })
@@ -276,7 +271,7 @@ function fetchLiveScores() {
 setInterval(fetchLiveScores, 2000);
 
 function sendLiveScore(name, score) {
-  fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
+  fetch(`${BACKEND_URL}/update-live-score`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
