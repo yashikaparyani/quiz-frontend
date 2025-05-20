@@ -118,89 +118,66 @@ function startTimer() {
         sendLiveScore(username, score);
       }
       
-      // Fetch and display percentages
-      console.log('Fetching percentages for question:', currentQuestionIndex);
+      // Get the selected option index
+      const selectedIndex = Array.from(buttons).findIndex(btn => btn.classList.contains("selected"));
       
-      // Temporary test data - remove this when backend is fixed
-      const testPercentages = [25, 40, 20, 15]; // Example percentages for 4 options
-      
-      // First try to get real data from backend
-      fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error('Network response was not ok');
+      // Send the selected option to backend
+      fetch(`${BACKEND_URL}/update-option-stats`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          questionId: currentQuestionIndex,
+          selectedOption: selectedIndex
+        })
+      })
+      .then(() => {
+        // After sending the selection, fetch the updated percentages
+        return fetch(`${BACKEND_URL}/get-option-stats/${currentQuestionIndex}`);
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Option statistics:', data);
+        
+        // Calculate total responses
+        const totalResponses = data.reduce((sum, count) => sum + count, 0);
+        
+        // Update progress bars with percentages
+        data.forEach((count, idx) => {
+          const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+          if (fill) {
+            // Calculate percentage
+            const percentage = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
+            
+            // Force a reflow to ensure animation works
+            fill.style.width = '0%';
+            void fill.offsetWidth;
+            
+            // Set the new width with animation
+            setTimeout(() => {
+              fill.style.width = `${percentage}%`;
+            }, 50);
+            
+            // Remove any existing percentage text
+            const existingText = fill.querySelector('.percentage-text');
+            if (existingText) {
+              existingText.remove();
+            }
+            
+            // Add new percentage text
+            const percentageText = document.createElement('span');
+            percentageText.className = 'percentage-text';
+            percentageText.textContent = `${Math.round(percentage)}%`;
+            fill.appendChild(percentageText);
+            
+            console.log(`Option ${idx}: ${Math.round(percentage)}% (${count} users)`);
           }
-          return res.json();
-        })
-        .then(data => {
-          console.log('Raw percentage data:', data);
-          
-          // If backend returns all zeros or invalid data, use test data
-          const useTestData = !Array.isArray(data) || 
-                            data.length === 0 || 
-                            data.every(val => val === 0 || val === null || val === undefined);
-          
-          const finalData = useTestData ? testPercentages : data;
-          console.log('Using data:', finalData);
-
-          // Process and validate percentages
-          const processedData = finalData.map(percent => {
-            const num = parseFloat(percent);
-            return isNaN(num) ? 0 : Math.max(0, Math.min(100, num));
-          });
-
-          console.log('Processed percentages:', processedData);
-
-          processedData.forEach((percent, idx) => {
-            const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-            if (fill) {
-              // Force a reflow to ensure animation works
-              fill.style.width = '0%';
-              void fill.offsetWidth;
-              
-              // Set the new width with animation
-              setTimeout(() => {
-                fill.style.width = `${percent}%`;
-              }, 50);
-              
-              // Remove any existing percentage text
-              const existingText = fill.querySelector('.percentage-text');
-              if (existingText) {
-                existingText.remove();
-              }
-              
-              // Add new percentage text
-              const percentageText = document.createElement('span');
-              percentageText.className = 'percentage-text';
-              percentageText.textContent = `${Math.round(percent)}%`;
-              fill.appendChild(percentageText);
-              
-              console.log(`Option ${idx}: Set to ${percent}%`);
-            } else {
-              console.warn(`Progress bar element not found for index ${idx}`);
-            }
-          });
-        })
-        .catch(err => {
-          console.error('Error fetching percentages:', err);
-          // Use test data if backend fails
-          console.log('Using test data due to error');
-          testPercentages.forEach((percent, idx) => {
-            const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-            if (fill) {
-              fill.style.width = '0%';
-              void fill.offsetWidth;
-              setTimeout(() => {
-                fill.style.width = `${percent}%`;
-              }, 50);
-              
-              const percentageText = document.createElement('span');
-              percentageText.className = 'percentage-text';
-              percentageText.textContent = `${percent}%`;
-              fill.appendChild(percentageText);
-            }
-          });
         });
+      })
+      .catch(err => {
+        console.error('Error updating option statistics:', err);
+      });
     }
   }, 1000);
 }
