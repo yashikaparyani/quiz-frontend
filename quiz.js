@@ -22,7 +22,6 @@ function showQuestion() {
   const questionData = questions[currentQuestionIndex];
   questionElement.innerText = questionData.question;
   optionsElement.innerHTML = "";
-  hasAnswered = false;  // Reset answer state for new question
 
   questionData.options.forEach((option, index) => {
     const buttonWrapper = document.createElement("div");
@@ -32,9 +31,29 @@ function showQuestion() {
     button.innerText = option;
     button.classList.add("btn");
     button.addEventListener("click", () => {
-      if (!hasAnswered) {  // Only allow answering once
         selectAnswer(index);
-      }
+        fetch('https://flask-backend-9bjs.onrender.com/submit-option', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                question_id: currentQuestionIndex,
+                option_index: index
+            })
+        })
+        .then(() => {
+            fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
+                .then(res => res.json())
+                .then(data => {
+                    const buttons = optionsElement.querySelectorAll('button');
+                    data.forEach((percent, idx) => {
+                        const originalText = buttons[idx].innerText.split(" (")[0];
+                        buttons[idx].innerText =` ${originalText} (${percent}%)`;
+
+                        const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+                        if (fill) fill.style.width = `${percent}%`;
+                    });
+                });
+        });
     });
 
     const progressBar = document.createElement("div");
