@@ -119,28 +119,55 @@ function startTimer() {
       }
       
       // Fetch and display percentages
-      fetch(`https://flask-backend-9bjs.onrender.com/get-percentages/${currentQuestionIndex}`)
-        .then(res => res.json())
+      fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return res.json();
+        })
         .then(data => {
+          console.log('Received percentages:', data); // Debug log
+          if (!Array.isArray(data)) {
+            console.error('Invalid data format received:', data);
+            return;
+          }
           data.forEach((percent, idx) => {
             const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
             if (fill) {
-              fill.style.width = `${percent}%`;
+              const percentage = Math.round(percent);
+              fill.style.width = `${percentage}%`;
+              
               // Remove any existing percentage text
               const existingText = fill.querySelector('.percentage-text');
               if (existingText) {
                 existingText.remove();
               }
+              
               // Add new percentage text
               const percentageText = document.createElement('span');
               percentageText.className = 'percentage-text';
-              percentageText.textContent = `${Math.round(percent)}%`;
+              percentageText.textContent = `${percentage}%`;
               fill.appendChild(percentageText);
+              
+              // Debug log
+              console.log(`Option ${idx}: ${percentage}%`);
+            } else {
+              console.warn(`Progress bar element not found for index ${idx}`);
             }
           });
         })
         .catch(err => {
           console.error('Error fetching percentages:', err);
+          // Show error in progress bars
+          const progressBars = document.querySelectorAll('.progress-bar-fill');
+          progressBars.forEach(bar => {
+            bar.style.width = '0%';
+            const errorText = document.createElement('span');
+            errorText.className = 'percentage-text';
+            errorText.textContent = 'Error';
+            bar.appendChild(errorText);
+          });
         });
     }
   }, 1000);

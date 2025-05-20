@@ -85,18 +85,20 @@
             margin: 5px 0;
             overflow: visible;
             position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .progress-bar-fill {
             height: 100%;
-            background: #4CAF50;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            transition: width 0.5s ease;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 0;
             border-radius: 10px;
+            min-width: 30px;
         }
 
         .percentage-text {
@@ -108,6 +110,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
+            white-space: nowrap;
         }
 
         .btn-container {
