@@ -231,46 +231,74 @@ body {
 /* Mobile View */
 @media (max-width: 767px) {
   body {
-    padding: 10px;
+    padding: 0;
+    margin: 0;
+    min-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
-
   .quiz-container {
-    max-width: 100%;
-    padding: 15px;
-    margin-bottom: 15px;
+    max-width: 95vw;
+    width: 95vw;
+    min-height: unset;
+    margin: 4vw auto 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    padding: 5vw 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: white;
   }
-
-  #live-leaderboard-section {
-    max-width: 100%;
-    padding: 12px;
+  .quiz-container img {
+    max-width: 30vw;
+    height: auto;
+    margin-bottom: 4vw;
+    margin-top: 2vw;
   }
-
-  .btn {
-    font-size: 14px;
-    padding: 10px;
+  .quiz-container h1, .quiz-container h2, .quiz-container h3 {
+    font-size: 7vw;
+    margin: 2vw 0 2vw 0;
+    word-break: break-word;
+    text-align: center;
   }
-
   #timer {
-    font-size: 16px;
-    margin-bottom: 8px;
+    font-size: 5vw;
+    margin-bottom: 2vw;
+    text-align: center;
+    word-break: break-word;
   }
-
-  #live-leaderboard-section h3 {
-    font-size: 18px;
+  .btn {
+    font-size: 4vw;
+    padding: 3vw 2vw;
+    margin: 2vw 0;
+    width: 100%;
+    box-sizing: border-box;
   }
-
-  #live-leaderboard li {
-    font-size: 13px;
-    padding: 4px 2px;
+  .btn-container {
+    gap: 2vw;
+    margin-bottom: 2vw;
   }
-
   .progress-bar-container {
-    height: 4px;
+    height: 2vw;
+    margin-top: 1vw;
   }
-
-  #next-btn {
-    font-size: 16px;
-    padding: 10px;
+  #live-leaderboard-section {
+    max-width: 95vw;
+    width: 95vw;
+    margin: 4vw auto 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    padding: 4vw 2vw;
+  }
+  #live-leaderboard-section h3 {
+    font-size: 5vw;
+    padding-bottom: 1vw;
+  }
+  #live-leaderboard li {
+    font-size: 3.5vw;
+    padding: 1vw 0;
   }
 }
 
@@ -309,4 +337,8 @@ body {
     transform-origin: center;
     transform: scale(calc(0.9 + (100vw - 360px) / (1024 - 360) * 0.1));
   }
+}
+
+html, body {
+  overflow-x: hidden;
 }
