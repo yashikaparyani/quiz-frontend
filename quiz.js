@@ -119,6 +119,7 @@ function startTimer() {
       }
       
       // Fetch and display percentages
+      console.log('Fetching percentages for question:', currentQuestionIndex);
       fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`)
         .then(res => {
           if (!res.ok) {
@@ -127,16 +128,31 @@ function startTimer() {
           return res.json();
         })
         .then(data => {
-          console.log('Received percentages:', data); // Debug log
+          console.log('Raw percentage data:', data); // Debug raw data
+          
+          // Ensure data is an array and has valid numbers
           if (!Array.isArray(data)) {
             console.error('Invalid data format received:', data);
             return;
           }
-          data.forEach((percent, idx) => {
+
+          // Process and validate percentages
+          const processedData = data.map(percent => {
+            const num = parseFloat(percent);
+            return isNaN(num) ? 0 : Math.max(0, Math.min(100, num));
+          });
+
+          console.log('Processed percentages:', processedData); // Debug processed data
+
+          processedData.forEach((percent, idx) => {
             const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
             if (fill) {
-              const percentage = Math.round(percent);
-              fill.style.width = `${percentage}%`;
+              // Force a reflow to ensure animation works
+              fill.style.width = '0%';
+              void fill.offsetWidth;
+              
+              // Set the new width
+              fill.style.width = `${percent}%`;
               
               // Remove any existing percentage text
               const existingText = fill.querySelector('.percentage-text');
@@ -147,11 +163,10 @@ function startTimer() {
               // Add new percentage text
               const percentageText = document.createElement('span');
               percentageText.className = 'percentage-text';
-              percentageText.textContent = `${percentage}%`;
+              percentageText.textContent = `${Math.round(percent)}%`;
               fill.appendChild(percentageText);
               
-              // Debug log
-              console.log(`Option ${idx}: ${percentage}%`);
+              console.log(`Option ${idx}: Set to ${percent}%`); // Debug each option
             } else {
               console.warn(`Progress bar element not found for index ${idx}`);
             }

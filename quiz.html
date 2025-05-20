@@ -91,7 +91,7 @@
         .progress-bar-fill {
             height: 100%;
             background: linear-gradient(90deg, #4CAF50, #45a049);
-            transition: width 0.5s ease;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             display: flex;
             align-items: center;
@@ -99,6 +99,8 @@
             width: 0;
             border-radius: 10px;
             min-width: 30px;
+            will-change: width;
+            transform: translateZ(0);
         }
 
         .percentage-text {
@@ -111,6 +113,12 @@
             transform: translateX(-50%);
             z-index: 2;
             white-space: nowrap;
+            pointer-events: none;
+        }
+
+        @keyframes progressFill {
+            from { width: 0; }
+            to { width: var(--target-width); }
         }
 
         .btn-container {
