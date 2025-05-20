@@ -9,16 +9,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .drawer-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.25);
+            z-index: 1001;
+        }
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: #fff;
+            color: #222;
+            box-shadow: 2px 0 12px rgba(20,83,45,0.12);
+            z-index: 1002;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+            display: flex;
+            flex-direction: column;
+            padding: 32px 18px 18px 18px;
+        }
+        .drawer.open {
+            transform: translateX(0);
+        }
+        .drawer-close {
+            align-self: flex-end;
+            font-size: 1.7rem;
+            background: none;
+            border: none;
+            color: #222;
+            cursor: pointer;
+            margin-bottom: 18px;
+        }
+        .drawer ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .drawer ul li a {
+            color: #222;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .drawer ul li a:hover {
+            color: #22c55e;
+        }
+        .hamburger {
+            font-size: 2.1rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #222;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <header class="nav" style="padding-top: 20px;">
         <div style="display: flex; align-items: center; gap: 18px;">
+            <button class="hamburger" id="drawerOpenBtn" aria-label="Open navigation menu">
+                <span style="font-size:2.1rem;">&#9776;</span>
+            </button>
             <img src="images/ibi.jpg" alt="IBI Enterprise Logo" style="max-width:70px; width:14vw; height:auto; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-right: 8px;">
             <h1 style="font-family: 'Inter', sans-serif; font-size: 2.2rem; margin: 0; color: #1a2b3c; letter-spacing: 2px;">Qconnect</h1>
         </div>
-        <nav style="margin-top: 18px; width: 100%;">
-            <ul style="display: flex; gap: 18px; list-style: none; padding: 0; margin: 0; justify-content: flex-start;">
-                <li><a href="leaderboard.html">Leaderboard</a></li>
+        <div class="drawer-backdrop" id="drawerBackdrop"></div>
+        <nav class="drawer" id="drawerNav">
+            <button class="drawer-close" id="drawerCloseBtn" aria-label="Close navigation menu">&times;</button>
+            <ul>
+                <li><a href="leaderboard.html">Global Leaderboard</a></li>
                 <li><a href="#">Solutions</a></li>
                 <li><a href="#">Pricing</a></li>
                 <li><a href="#">Resources</a></li>
@@ -88,5 +158,25 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+    // Drawer open/close logic
+    const drawerOpenBtn = document.getElementById('drawerOpenBtn');
+    const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+    const drawerNav = document.getElementById('drawerNav');
+    const drawerBackdrop = document.getElementById('drawerBackdrop');
+
+    drawerOpenBtn.addEventListener('click', () => {
+        drawerNav.classList.add('open');
+        drawerBackdrop.style.display = 'block';
+    });
+    drawerCloseBtn.addEventListener('click', () => {
+        drawerNav.classList.remove('open');
+        drawerBackdrop.style.display = 'none';
+    });
+    drawerBackdrop.addEventListener('click', () => {
+        drawerNav.classList.remove('open');
+        drawerBackdrop.style.display = 'none';
+    });
+    </script>
 </body>
 </html>
