@@ -2,6 +2,7 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
 let hasAnswered = false;  // Track if user has answered current question
+let questionsAttempted = 0;  // Track number of questions attempted
 
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
@@ -9,13 +10,26 @@ const nextButton = document.getElementById("next-btn");
 const scoreElement = document.getElementById("score");
 const quizContainer = document.querySelector(".quiz-container");
 
+// Progress indicator elements
+const totalQuestionsElement = document.getElementById("total-questions");
+const questionsAttemptedElement = document.getElementById("questions-attempted");
+const questionsLeftElement = document.getElementById("questions-left");
+
 const BACKEND_URL = "https://flask-backend-9bjs.onrender.com";
 
+function updateProgressIndicators() {
+    totalQuestionsElement.textContent = questions.length;
+    questionsAttemptedElement.textContent = questionsAttempted;
+    questionsLeftElement.textContent = questions.length - questionsAttempted;
+}
+
 function startQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  hasAnswered = false;
-  showQuestion();
+    currentQuestionIndex = 0;
+    score = 0;
+    hasAnswered = false;
+    questionsAttempted = 0;
+    updateProgressIndicators();
+    showQuestion();
 }
 
 function showQuestion() {
@@ -141,6 +155,12 @@ function startTimer() {
           btn.style.animation = "shake 0.5s";
         }
       });
+
+      // Update questions attempted
+      if (!hasAnswered) {
+        questionsAttempted++;
+        updateProgressIndicators();
+      }
 
       // Only update live score after timer ends
       const username = localStorage.getItem("username") || "Guest";
@@ -308,6 +328,8 @@ socket.on('question_update', (data) => {
     // Only update if it's a new question
     if (data.questionId !== currentQuestionIndex) {
       currentQuestionIndex = data.questionId;
+      questionsAttempted++;
+      updateProgressIndicators();
       
       // Check if this is the last question
       if (currentQuestionIndex >= questions.length - 1) {
