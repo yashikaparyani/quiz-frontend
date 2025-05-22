@@ -265,9 +265,6 @@
 
     <div class="clients-section">
       <h2>Connected Clients</h2>
-      <div class="clients-header">
-        <span>Total Connected: <span id="totalConnected" class="highlight">0</span></span>
-      </div>
       <div id="clientsList" class="clients-list">
         <!-- Client cards will be added here dynamically -->
       </div>
@@ -303,7 +300,7 @@
     // Update connected clients list
     function updateClientsList() {
       const clientsList = document.getElementById('clientsList');
-      const totalConnected = document.getElementById('totalConnected');
+      const connectedClientsCount = document.getElementById('connectedClients');
       
       clientsList.innerHTML = '';
       connectedClients.forEach(client => {
@@ -316,7 +313,7 @@
         clientsList.appendChild(clientCard);
       });
       
-      totalConnected.textContent = connectedClients.size;
+      connectedClientsCount.textContent = connectedClients.size;
     }
 
     socket.on('connect', () => {
