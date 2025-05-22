@@ -139,6 +139,21 @@
       margin-top: 30px;
     }
 
+    .clients-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .clients-header .highlight {
+      color: #2ecc71;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
     .clients-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -151,24 +166,40 @@
       padding: 15px;
       border-radius: 10px;
       transition: transform 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .client-card:hover {
       transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .client-name {
       font-weight: 500;
-      margin-bottom: 5px;
+      color: #fff;
     }
 
     .client-status {
       font-size: 0.9em;
       color: #95a5a6;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .client-status.active {
       color: #2ecc71;
+    }
+
+    .client-status.active::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #2ecc71;
+      border-radius: 50%;
     }
 
     #status {
@@ -189,6 +220,10 @@
 
       .control-panel {
         grid-template-columns: 1fr;
+      }
+
+      .clients-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
     }
   </style>
@@ -230,6 +265,9 @@
 
     <div class="clients-section">
       <h2>Connected Clients</h2>
+      <div class="clients-header">
+        <span>Total Connected: <span id="totalConnected" class="highlight">0</span></span>
+      </div>
       <div id="clientsList" class="clients-list">
         <!-- Client cards will be added here dynamically -->
       </div>
@@ -265,7 +303,7 @@
     // Update connected clients list
     function updateClientsList() {
       const clientsList = document.getElementById('clientsList');
-      const connectedClientsCount = document.getElementById('connectedClients');
+      const totalConnected = document.getElementById('totalConnected');
       
       clientsList.innerHTML = '';
       connectedClients.forEach(client => {
@@ -278,7 +316,7 @@
         clientsList.appendChild(clientCard);
       });
       
-      connectedClientsCount.textContent = connectedClients.size;
+      totalConnected.textContent = connectedClients.size;
     }
 
     socket.on('connect', () => {
