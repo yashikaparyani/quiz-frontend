@@ -27,20 +27,22 @@
         </div>
     </div>
 
-    <div class="quiz-container">
-        <h1>JavaScript Quiz</h1>
-        <div id="timer">Time Left: <span id="time-left"></span> seconds</div>
-        <div id="question-container">
-            <h2 id="question">Loading...</h2>
-            <div id="options" class="btn-container"></div>
+    <div class="main-content">
+        <div class="quiz-container">
+            <h1>JavaScript Quiz</h1>
+            <div id="timer">Time Left: <span id="time-left"></span> seconds</div>
+            <div id="question-container">
+                <h2 id="question">Loading...</h2>
+                <div id="options" class="btn-container"></div>
+            </div>
+            <button id="next-btn" class="nextbtn hide">Next =></button>
+            <h2 id="score" class="hide">Your Score: 0</h2>
         </div>
-        <button id="next-btn" class="nextbtn hide">Next =></button>
-        <h2 id="score" class="hide">Your Score: 0</h2>
-    </div>
 
-    <div id="live-leaderboard-section">
-        <h3>Live Leaderboard</h3>
-        <ol id="live-leaderboard"></ol>
+        <div id="live-leaderboard-section">
+            <h3>Live Leaderboard</h3>
+            <ol id="live-leaderboard"></ol>
+        </div>
     </div>
 
     <script src="quiz_data.js"></script>
