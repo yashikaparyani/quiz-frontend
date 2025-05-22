@@ -3,6 +3,7 @@ let score = 0;
 let timerInterval;
 let hasAnswered = false;  // Track if user has answered current question
 let questionsAttempted = 0;  // Track number of questions attempted
+let answerSubmissionPromise = null;
 
 const questionElement = document.getElementById("question");
 const optionsElement = document.getElementById("options");
@@ -49,8 +50,8 @@ function showQuestion() {
       if (!hasAnswered) {
         selectAnswer(index);
         hasAnswered = true;
-        // Submit the selected option
-        fetch(`${BACKEND_URL}/submit-option`, {
+        // Submit the selected option and track the promise
+        answerSubmissionPromise = fetch(`${BACKEND_URL}/submit-option`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -116,7 +117,7 @@ function startTimer() {
   clearInterval(timerInterval);
   timeleft = 10;
   document.getElementById("time-left").innerText = timeleft;
-  timerInterval = setInterval(() => {
+  timerInterval = setInterval(async () => {
     timeleft--;
     document.getElementById("time-left").innerText = timeleft;
     if (timeleft === 0) {
@@ -145,6 +146,14 @@ function startTimer() {
       const username = localStorage.getItem("username") || "Guest";
       if (hasAnswered) {
         sendLiveScore(username, score);
+      }
+
+      // Wait for answer submission to finish before fetching percentages
+      if (answerSubmissionPromise) {
+        try {
+          await answerSubmissionPromise;
+        } catch (e) {}
+        answerSubmissionPromise = null;
       }
 
       // Fetch and display percentages regardless of whether user answered or not
