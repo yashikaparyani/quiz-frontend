@@ -58,29 +58,8 @@ function showQuestion() {
             option_index: index
           })
         })
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to submit option');
-          return res.json();
-        })
-        .then(() => {
-          // Fetch updated percentages
-          return fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`);
-        })
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to get percentages');
-          return res.json();
-        })
-        .then(data => {
-          const buttons = optionsElement.querySelectorAll('button');
-          data.forEach((percent, idx) => {
-            const originalText = buttons[idx].innerText.split(" (")[0];
-            buttons[idx].innerText = `${originalText} (${percent}%)`;
-            const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-            if (fill) fill.style.width = `${percent}%`;
-          });
-        })
         .catch(err => {
-          console.error('Error updating option statistics:', err);
+          console.error('Error submitting option:', err);
         });
       }
     });
@@ -168,27 +147,8 @@ function startTimer() {
         sendLiveScore(username, score);
       }
 
-      // Get the selected option index
-      const selectedIndex = Array.from(buttons).findIndex(btn => btn.classList.contains("selected"));
-
-      // Submit the selected option (again, for timer-based stats)
-      if (selectedIndex !== -1) {
-        fetch(`${BACKEND_URL}/submit-option`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question_id: currentQuestionIndex,
-            option_index: selectedIndex
-          })
-        })
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to submit option');
-          return res.json();
-        })
-        .then(() => {
-          // Fetch updated percentages
-          return fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`);
-        })
+      // Fetch and display percentages regardless of whether user answered or not
+      fetch(`${BACKEND_URL}/get-percentages/${currentQuestionIndex}`)
         .then(res => {
           if (!res.ok) throw new Error('Failed to get percentages');
           return res.json();
@@ -214,7 +174,6 @@ function startTimer() {
         .catch(err => {
           console.error('Error updating option statistics:', err);
         });
-      }
     }
   }, 1000);
 }

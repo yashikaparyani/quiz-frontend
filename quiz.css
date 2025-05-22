@@ -115,6 +115,9 @@
             z-index: 2;
             white-space: nowrap;
             pointer-events: none;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
         @keyframes progressFill {
@@ -323,6 +326,23 @@
             .logo-container img {
                 max-width: 100px;
             }
+
+            .percentage-text {
+                font-size: 14px;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 3px 8px;
+                border-radius: 6px;
+                text-shadow: 2px 2px 2px rgba(0,0,0,0.7);
+                font-weight: 800;
+            }
+
+            .progress-bar-container {
+                height: 24px;
+            }
+
+            .progress-bar-fill {
+                min-width: 40px;
+            }
         }
 
         /* Small Mobile Phones */
@@ -374,6 +394,11 @@
 
             .logo-container img {
                 max-width: 80px;
+            }
+
+            .percentage-text {
+                font-size: 13px;
+                padding: 2px 6px;
             }
         }
 
