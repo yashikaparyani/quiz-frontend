@@ -136,7 +136,7 @@ function startTimer() {
       });
 
       // Update questions attempted
-      if (!hasAnswered) {
+      if (!hasAnswered && questionsAttempted < questions.length) {
         questionsAttempted++;
         updateProgressIndicators();
       }
@@ -154,22 +154,7 @@ function startTimer() {
           return res.json();
         })
         .then(data => {
-          data.forEach((percent, idx) => {
-            const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
-            if (fill) {
-              fill.style.width = `${percent}%`;
-              // Remove any existing percentage text
-              const existingText = fill.querySelector('.percentage-text');
-              if (existingText) {
-                existingText.remove();
-              }
-              // Add new percentage text
-              const percentageText = document.createElement('span');
-              percentageText.className = 'percentage-text';
-              percentageText.textContent = `${Math.round(percent)}%`;
-              fill.appendChild(percentageText);
-            }
-          });
+          updateOptionPercentages(data);
         })
         .catch(err => {
           console.error('Error updating option statistics:', err);
@@ -287,7 +272,6 @@ socket.on('question_update', (data) => {
     // Only update if it's a new question
     if (data.questionId !== currentQuestionIndex) {
       currentQuestionIndex = data.questionId;
-      questionsAttempted++;
       updateProgressIndicators();
       
       // Check if this is the last question
@@ -347,3 +331,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Remove the next button click handler since admin controls question changes
 nextButton.style.display = 'none';
+
+// Add a helper function to update progress bars and percentage text
+function updateOptionPercentages(percentages) {
+  percentages.forEach((percent, idx) => {
+    const fill = document.querySelector(`#progress-${idx} .progress-bar-fill`);
+    if (fill) {
+      fill.style.width = `${percent}%`;
+      // Remove any existing percentage text
+      const existingText = fill.querySelector('.percentage-text');
+      if (existingText) {
+        existingText.remove();
+      }
+      // Add new percentage text
+      const percentageText = document.createElement('span');
+      percentageText.className = 'percentage-text';
+      percentageText.textContent = `${Math.round(percent)}%`;
+      fill.appendChild(percentageText);
+    }
+  });
+}
