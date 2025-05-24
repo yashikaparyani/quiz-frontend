@@ -3,9 +3,9 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-  }
+}
   
-  body {
+body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #aec6cf, #fad0c4);
     display: flex;
@@ -13,27 +13,27 @@
     align-items: center;
     min-height: 100vh;
     padding: 20px;
-  }
+}
   
-  /* Container */
-  .form-container {
+/* Container */
+.form-container {
     background: #ffffff;
     padding: 30px 25px;
     border-radius: 12px;
     box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
     width: 100%;
     max-width: 400px;
-  }
+}
   
-  /* Heading */
-  .form-container h2 {
+/* Heading */
+.form-container h2 {
     margin-bottom: 20px;
     color: #1e3a8a;
     font-size: 26px;
-  }
+}
   
-  /* Inputs */
-  input {
+/* Inputs */
+input {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -41,16 +41,16 @@
     margin-bottom: 15px;
     font-size: 15px;
     transition: border 0.3s, box-shadow 0.3s;
-  }
+}
   
-  input:focus {
+input:focus {
     border-color: #1e3a8a;
     box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
     outline: none;
-  }
+}
   
-  /* Button */
-  button {
+/* Button */
+button {
     width: 100%;
     background: #1e3a8a;
     color: white;
@@ -61,49 +61,49 @@
     font-size: 16px;
     transition: background 0.3s, transform 0.2s;
     margin-top: 5px;
-  }
+}
   
-  button:hover {
+button:hover {
     background: #294cbf;
     transform: translateY(-2px);
-  }
+}
   
-  /* Link */
-  .form-container p {
+/* Link */
+.form-container p {
     margin-top: 15px;
     font-size: 14px;
-  }
+}
   
-  .form-container a {
+.form-container a {
     color: #ff5f6d;
     text-decoration: none;
     font-weight: 500;
-  }
+}
   
-  .form-container a:hover {
+.form-container a:hover {
     text-decoration: underline;
-  }
+}
   
-  /* Message */
-  #message {
+/* Message */
+#message {
     margin-top: 12px;
     font-size: 14px;
     color: red;
     min-height: 20px;
-  }
+}
   
-  /* Mobile-first responsive */
-  @media (max-width: 400px) {
+/* Mobile-first responsive */
+@media (max-width: 400px) {
     .form-container {
-      padding: 20px;
+        padding: 20px;
     }
   
     .form-container h2 {
-      font-size: 22px;
+        font-size: 22px;
     }
   
     button {
-      font-size: 15px;
-      padding: 10px;
+        font-size: 15px;
+        padding: 10px;
     }
-  }
+}

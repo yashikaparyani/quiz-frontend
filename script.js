@@ -16,10 +16,13 @@ document.querySelectorAll("a").forEach(anchor => {
         }
     });
 });
-document.addEventListener("DOMContentLoaded", function () { document.querySelector(".btn-login").addEventListener("click", function () { window.open("login.html","_blank") });
 
-document.querySelector(".btn-signup").addEventListener("click", function () {
-    window.open("signup.html","_blank");
-});
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector(".btn-login").addEventListener("click", function () {
+        window.open("login.html", "_blank");
+    });
 
+    document.querySelector(".btn-signup").addEventListener("click", function () {
+        window.open("signup.html", "_blank");
+    });
 });
